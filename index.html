@@ -65,6 +65,7 @@
         border-radius: 999px;
         font-size: 0.875rem;
         letter-spacing: 0.02em;
+        z-index: 10;
       }
     </style>
   </head>
@@ -74,16 +75,22 @@
       <div id="pdf-container" aria-label="Documento PDF"></div>
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.js" integrity="sha512-1L8NQUS3mJ0uk0iAjRh/JhIRsmCBovJQTCXSaGwIkYgWlE5RgACkl1XfLAfZV3N8CF9vD0/JHG0wcXKZq9n5zg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
       (function () {
         const pdfjsVersion = '4.3.136';
-        const pdfjsLib = window['pdfjs-dist/build/pdf'];
-        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion}/pdf.worker.min.js`;
-
+        const pdfjsLib = window.pdfjsLib;
         const container = document.getElementById('pdf-container');
         const statusEl = document.getElementById('status');
         const source = 'assets/documento.pdf';
+
+        if (!pdfjsLib) {
+          console.error('PDF.js no se cargó.');
+          if (statusEl) statusEl.textContent = 'No se pudo inicializar el visor.';
+          return;
+        }
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion}/pdf.worker.min.js`;
 
         let pdfDoc = null;
         let resizeTimer = null;
@@ -132,6 +139,7 @@
 
         const init = async () => {
           try {
+            setStatus('Cargando PDF…');
             pdfDoc = await pdfjsLib.getDocument({ url: source }).promise;
             await renderPages();
           } catch (err) {
