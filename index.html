@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Visor Tiny Weird Smile</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #111;
+        color: #f5f5f5;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      header, footer {
+        padding: 1rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.65);
+      }
+
+      header h1 {
+        font-size: 1.25rem;
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      .viewer {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        background: #1d1d1d;
+      }
+
+      .viewer iframe,
+      .viewer object {
+        flex: 1;
+        border: none;
+        width: 100%;
+        height: 100%;
+      }
+
+      .fallback {
+        margin: auto;
+        max-width: 26rem;
+        padding: 2rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.35);
+        border-radius: 0.75rem;
+      }
+
+      .fallback a {
+        color: #8dd0ff;
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Visor del PDF</h1>
+    </header>
+
+    <main class="viewer" aria-label="Visor principal del PDF">
+      <object
+        data="assets/documento.pdf"
+        type="application/pdf"
+        role="document"
+      >
+        <div class="fallback">
+          <p>
+            Tu navegador no pudo mostrar el PDF automáticamente.
+            Puedes descargarlo y abrirlo manualmente:
+          </p>
+          <p>
+            <a href="assets/documento.pdf" target="_blank" rel="noopener noreferrer">
+              Descargar PDF
+            </a>
+          </p>
+        </div>
+      </object>
+    </main>
+
+    <footer>
+      Coloca tu archivo largo en <code>assets/documento.pdf</code> para verlo aquí.
+    </footer>
+  </body>
+</html>
