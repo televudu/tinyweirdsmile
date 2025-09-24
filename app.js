@@ -39,7 +39,9 @@ sections.forEach((section) => {
     item.style.setProperty("--scale", baseScale);
 
     const animationType = item.dataset.animate;
-    createScrollAnimation(item, animationType, section);
+    if (animationType && animationType !== "none") {
+      createScrollAnimation(item, animationType, section);
+    }
   });
 });
 

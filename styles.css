@@ -1,7 +1,5 @@
 :root {
   color-scheme: dark;
-  --bg-color: #020418;
-  --accent: rgba(255, 255, 255, 0.35);
   --section-height: 140vh;
 }
 
@@ -11,9 +9,9 @@
 
 body {
   margin: 0;
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  background: radial-gradient(circle at top, rgba(12, 27, 63, 0.85), var(--bg-color) 55%);
+  background: #000;
   color: #f4f4f4;
+  font-family: "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
 }
 
@@ -28,37 +26,6 @@ body {
   display: grid;
   place-items: center;
   overflow: hidden;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.story-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(2, 4, 24, 0.3) 0%, rgba(2, 4, 24, 0.9) 90%);
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-.section-label {
-  position: absolute;
-  top: 3vh;
-  left: 3vw;
-  padding: 0.35rem 0.65rem;
-  font-size: 0.75rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-  backdrop-filter: blur(6px);
-  background: rgba(6, 10, 40, 0.55);
-  z-index: 5;
-}
-
-.story-section.is-active .section-label {
-  border-color: rgba(255, 255, 255, 0.65);
-  color: #ffffff;
-  background: rgba(12, 24, 72, 0.65);
 }
 
 .layer {
@@ -81,7 +48,10 @@ body {
 
 .parallax-item {
   position: absolute;
-  transform: translate3d(calc(var(--base-x, 0) * 1vw), calc(var(--base-y, 0) * 1vh), 0) scale(var(--scale, 1));
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translate3d(calc(var(--base-x, 0) * 1vw), calc(var(--base-y, 0) * 1vh), 0)
+    scale(var(--scale, 1));
   transform-origin: center;
   will-change: transform, opacity;
   opacity: var(--opacity, 1);
@@ -89,10 +59,8 @@ body {
 
 .parallax-item img {
   display: block;
-  width: min(45vw, 600px);
   height: auto;
-  border-radius: 16px;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+  max-width: min(60vw, 700px);
 }
 
 @media (max-width: 768px) {
@@ -101,11 +69,6 @@ body {
   }
 
   .parallax-item img {
-    width: min(65vw, 360px);
-    border-radius: 12px;
-  }
-
-  .section-label {
-    font-size: 0.65rem;
+    max-width: min(85vw, 360px);
   }
 }
