@@ -1,6 +1,7 @@
 :root {
   color-scheme: dark;
   --section-height: 140vh;
+  --section-overlap: 40vh;
 }
 
 * {
@@ -18,14 +19,17 @@ body {
 .story-wrapper {
   position: relative;
   width: 100vw;
+  padding-bottom: calc(var(--section-height) / 2);
 }
 
 .story-section {
   position: relative;
   min-height: var(--section-height);
+  margin-bottom: calc(-1 * var(--section-overlap));
+  padding: calc(var(--section-overlap) / 2) 0;
   display: grid;
   place-items: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .layer {
@@ -59,8 +63,9 @@ body {
 
 .parallax-item img {
   display: block;
+  width: auto;
   height: auto;
-  max-width: min(60vw, 700px);
+  max-width: none;
 }
 
 @media (max-width: 768px) {
@@ -69,6 +74,6 @@ body {
   }
 
   .parallax-item img {
-    max-width: min(85vw, 360px);
+    max-width: 100%;
   }
 }
