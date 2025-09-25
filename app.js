@@ -36,8 +36,9 @@ sections.forEach((section) => {
         scrollTrigger: {
           trigger: section,
           start: "top bottom",
-          end: "bottom top",
+          end: () => "+=" + (section.offsetHeight + window.innerHeight * 0.8),
           scrub: true,
+          invalidateOnRefresh: true,
         },
       }
     );

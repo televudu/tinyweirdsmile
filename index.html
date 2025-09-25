@@ -324,11 +324,17 @@
           const previousScroll = window.scrollY;
           window.scrollBy(0, stepDistance);
 
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
           const newScroll = window.scrollY;
 
-          if (newScroll >= maxScroll - 1) {
-            stopAutoScroll();
+          if (newScroll >= maxScroll - 1 && maxScroll > 0) {
+            window.scrollTo({ top: 0, behavior: 'auto' });
+            lastAutoScrollTick = performance.now();
+            autoScrollResidual = 0;
+            if (window.ScrollTrigger?.refresh) {
+              ScrollTrigger.refresh();
+            }
+            autoScrollId = requestAnimationFrame(step);
             return;
           }
 
