@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="story-entry" id="story-entry" role="button" tabindex="0">
+      <div class="story-entry__inner">
+        <h1 class="story-entry__title">Tiny Weird Smile</h1>
+      </div>
+    </div>
     <main class="story-wrapper">
       <section id="intro" class="story-section" data-section="intro">
         <div class="layer layer-front">
@@ -248,16 +253,157 @@
     <script src="layout-config.js"></script>
     <script src="app.js"></script>
     <script>
-      const storyMusic = new Audio('audio/tinyweirdsmile.mp3');
+      const storyMusic = new Audio('audio/tinyweirdsmile.m4a');
       storyMusic.loop = true;
       storyMusic.volume = 0.6;
 
-      document.querySelector('.has-audio-trigger')?.addEventListener('click', () => {
+      const entryOverlay = document.getElementById('story-entry');
+      const triggerFigure = document.querySelector('.has-audio-trigger');
+
+      const AUTO_SCROLL_SPEED = 60; // px per segundo
+
+      let autoScrollId = null;
+      let autoScrollActive = false;
+      let lastAutoScrollTick = null;
+      let autoScrollResidual = 0;
+      let autoScrollStartTimeout = null;
+
+      function ensureMusicPlaying() {
         if (storyMusic.paused) {
           storyMusic.play().catch(() => {});
+        }
+      }
+
+      function toggleMusic() {
+        if (storyMusic.paused) {
+          storyMusic.play().then(() => {
+            scheduleAutoScroll(0);
+          }).catch(() => {});
         } else {
           storyMusic.pause();
+          stopAutoScroll();
         }
+      }
+
+      function scheduleAutoScroll(delay = 0) {
+        if (autoScrollStartTimeout !== null) {
+          clearTimeout(autoScrollStartTimeout);
+        }
+        autoScrollStartTimeout = setTimeout(() => {
+          autoScrollStartTimeout = null;
+          startAutoScroll();
+        }, Math.max(0, delay));
+      }
+
+      function startAutoScroll() {
+        if (autoScrollActive) {
+          return;
+        }
+        autoScrollActive = true;
+        lastAutoScrollTick = performance.now();
+        autoScrollResidual = 0;
+
+        function step(time) {
+          if (!autoScrollActive) {
+            return;
+          }
+
+          const now = time;
+          const delta = Math.min(now - lastAutoScrollTick, 120);
+          lastAutoScrollTick = now;
+
+          autoScrollResidual += (delta / 1000) * AUTO_SCROLL_SPEED;
+          const stepDistance = Math.floor(autoScrollResidual);
+          if (stepDistance <= 0) {
+            autoScrollId = requestAnimationFrame(step);
+            return;
+          }
+
+          autoScrollResidual -= stepDistance;
+
+          const previousScroll = window.scrollY;
+          window.scrollBy(0, stepDistance);
+
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          const newScroll = window.scrollY;
+
+          if (newScroll >= maxScroll - 1) {
+            stopAutoScroll();
+            return;
+          }
+
+          if (newScroll === previousScroll && previousScroll < maxScroll - 1) {
+            autoScrollId = requestAnimationFrame(step);
+            return;
+          }
+
+          autoScrollId = requestAnimationFrame(step);
+        }
+
+        autoScrollId = requestAnimationFrame(step);
+      }
+
+      function stopAutoScroll() {
+        if (!autoScrollActive) {
+          if (autoScrollStartTimeout !== null) {
+            clearTimeout(autoScrollStartTimeout);
+            autoScrollStartTimeout = null;
+          }
+          return;
+        }
+        autoScrollActive = false;
+        autoScrollResidual = 0;
+        if (autoScrollId !== null) {
+          cancelAnimationFrame(autoScrollId);
+          autoScrollId = null;
+        }
+        if (autoScrollStartTimeout !== null) {
+          clearTimeout(autoScrollStartTimeout);
+          autoScrollStartTimeout = null;
+        }
+      }
+
+      function userInteractionNudge() {
+        if (!autoScrollActive) {
+          return;
+        }
+        lastAutoScrollTick = performance.now();
+      }
+
+      ['wheel', 'touchstart', 'touchmove', 'keydown', 'mousedown'].forEach((eventName) => {
+        window.addEventListener(eventName, userInteractionNudge, { passive: true });
+      });
+
+      function enterStory() {
+        ensureMusicPlaying();
+        window.scrollTo(0, 0);
+        scheduleAutoScroll(1000);
+        if (!entryOverlay) {
+          return;
+        }
+        if (entryOverlay.classList.contains('is-dismissed')) {
+          return;
+        }
+        entryOverlay.classList.add('is-dismissed');
+        setTimeout(() => {
+          entryOverlay.setAttribute('aria-hidden', 'true');
+        }, 650);
+      }
+
+      entryOverlay?.addEventListener('click', () => {
+        enterStory();
+      });
+
+      entryOverlay?.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          enterStory();
+        }
+      });
+
+      triggerFigure?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleMusic();
       });
     </script>
   </body>
