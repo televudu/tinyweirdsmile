@@ -1,7 +1,7 @@
 :root {
   color-scheme: dark;
   --section-height: 140vh;
-  --section-overlap: 40vh;
+  --section-overlap: 0vh;
 }
 
 * {
@@ -30,6 +30,12 @@ body {
   display: grid;
   place-items: center;
   overflow: visible;
+  transform: translate3d(var(--section-offset-x, 0), var(--section-offset-y, 0), 0);
+  will-change: transform;
+}
+
+.story-section + .story-section {
+  margin-top: 40vh;
 }
 
 .layer {
@@ -39,14 +45,17 @@ body {
 }
 
 .layer-bg {
+  z-index: 0;
   filter: saturate(0.9) brightness(0.9);
 }
 
 .layer-mid {
+  z-index: 10;
   filter: saturate(1.05);
 }
 
 .layer-front {
+  z-index: 20;
   filter: saturate(1.2) brightness(1.05);
 }
 
@@ -54,16 +63,38 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) translate3d(calc(var(--base-x, 0) * 1vw), calc(var(--base-y, 0) * 1vh), 0)
+  --offset-x: -50%;
+  --offset-y: -50%;
+  transform: translate(var(--offset-x), var(--offset-y))
+    translate3d(calc(var(--base-x, 0) * 1vw), calc(var(--base-y, 0) * 1vh), 0)
     scale(var(--scale, 1));
   transform-origin: center;
   will-change: transform, opacity;
   opacity: var(--opacity, 1);
 }
 
+.parallax-item.has-audio-trigger {
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 .parallax-item img {
   display: block;
   width: auto;
+  height: auto;
+  max-width: none;
+}
+
+.parallax-item.is-full-width {
+  left: 0;
+  --offset-x: 0%;
+  width: 100vw;
+}
+
+.parallax-item.is-full-width img {
+  width: 100%;
   height: auto;
   max-width: none;
 }
