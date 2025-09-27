@@ -1,0 +1,27 @@
+{
+  // Escena: intro
+  "intro": {
+
+    // Capa: front
+    "hoyo": { "layer": "front", "x": 615.61, "y": 239.23, "scalePercent": 108.51 },
+    "llave": { "layer": "front", "x": 986.69, "y": 698.26, "scalePercent": 100 }
+  },
+
+  // Escena: ciudad
+  "ciudad": {
+
+    // Capa: bg
+    "edificio": { "layer": "bg", "x": 480, "y": 900, "scalePercent": 100 },
+
+    // Capa: mid
+    "chicago-mid": { "layer": "mid", "x": 620, "y": 1100, "scalePercent": 100 },
+
+    // Capa: front
+    "chicago": { "layer": "front", "x": 780, "y": 1300, "scalePercent": 100 },
+    "mies": { "layer": "front", "x": 860, "y": 1500, "scalePercent": 100 },
+    "mies2": { "layer": "front", "x": 940, "y": 1700, "scalePercent": 100 },
+    "mies3": { "layer": "front", "x": 1020, "y": 1900, "scalePercent": 100 },
+    "mies4": { "layer": "front", "x": 1100, "y": 2100, "scalePercent": 100 },
+    "nuclear": { "layer": "front", "x": 1180, "y": 2300, "scalePercent": 100 }
+  }
+}

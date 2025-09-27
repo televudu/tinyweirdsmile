@@ -8,15 +8,26 @@
   </head>
   <body>
     <div class="stage-wrapper" data-stage>
-      <div class="story-stage">
-        <figure class="story-item" data-key="intro-hoyo">
-          <img src="recortadas/intro-front-hoyo.jpg" alt="Intro hoyo" draggable="false" />
-        </figure>
-        <figure class="story-item" data-key="intro-llave">
-          <img src="recortadas/intro-front-llave.jpg" alt="Intro llave" draggable="false" />
-        </figure>
+      <div class="story-stage" data-story-stage>
+        <div class="layer" data-layer="bg"></div>
+        <div class="layer" data-layer="mid"></div>
+        <div class="layer" data-layer="front"></div>
       </div>
     </div>
+
+    <button type="button" class="layout-toggle" data-layout-toggle>
+      Modo layout
+    </button>
+
+    <aside class="layout-panel" data-layout-panel hidden>
+      <header class="layout-panel__header">
+        <strong class="layout-panel__title">Layout actual</strong>
+        <button type="button" class="layout-panel__copy" data-layout-copy>
+          Copiar JSON
+        </button>
+      </header>
+      <pre class="layout-panel__output" data-layout-output>{}</pre>
+    </aside>
 
     <script src="app.js"></script>
   </body>
