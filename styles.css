@@ -23,12 +23,15 @@ body {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 32px 0;
 }
 
 .story-stage {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: calc(var(--stage-width) * 1px);
   height: calc(var(--stage-height) * 1px);
   transform-origin: top left;

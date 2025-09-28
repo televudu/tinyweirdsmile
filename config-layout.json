@@ -1,5 +1,5 @@
 {
-  // Escena activa: jardin
+  // Escena activa: fin
 
   // Escena: intro
   "intro": {
@@ -101,6 +101,19 @@
     "huxleydibujo": { "layer": "front", "x": 1446.19, "y": 35105.64, "scalePercent": 100, "zIndex": 0 },
     "kurt": { "layer": "front", "x": 456.95, "y": 32837.54, "scalePercent": 100, "zIndex": 0 },
     "mies": { "layer": "front", "x": 238.4, "y": 33906.68, "scalePercent": 100, "zIndex": 0 },
-    "pez": { "layer": "front", "x": 797.51, "y": 42725.15, "scalePercent": 100, "zIndex": 0 }
+    "pez": { "layer": "front", "x": 843.35, "y": 47399.74, "scalePercent": 100, "zIndex": 0 }
+  },
+
+  // Escena: fin
+  "fin": {
+
+    // Capa: front
+    "1": { "layer": "front", "x": 287.54, "y": 40739.4, "scalePercent": 100, "zIndex": 0 },
+    "2": { "layer": "front", "x": 290.51, "y": 42608.32, "scalePercent": 100, "zIndex": 0 },
+    "3": { "layer": "front", "x": 290.6, "y": 41819.92, "scalePercent": 100, "zIndex": 0 },
+    "cuchillo": { "layer": "front", "x": 828.28, "y": 36612.69, "scalePercent": 44.89, "zIndex": 0 },
+    "ecuacion": { "layer": "front", "x": 768.83, "y": 39264.64, "scalePercent": 71.47, "zIndex": 0 },
+    "ojos": { "layer": "front", "x": 488.84, "y": 47937.48, "scalePercent": 18.03, "zIndex": 0 },
+    "pantalla": { "layer": "front", "x": 506.26, "y": 46496, "scalePercent": 80.37, "zIndex": 0 }
   }
 }

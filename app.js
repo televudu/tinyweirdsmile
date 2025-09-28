@@ -13,6 +13,7 @@ const SCENE_OFFSETS = {
 
 const ITEM_LAYOUT = {};
 
+const stageWrapper = document.querySelector('[data-stage]');
 const stageEl = document.querySelector('[data-story-stage]');
 const root = document.documentElement;
 const layerContainers = new Map();
@@ -40,6 +41,8 @@ const BASE_LAYER_Z = {
   mid: 200,
   front: 300,
 };
+
+const SCROLL_LOOP_THRESHOLD = 24;
 
 if (!stageEl) {
   console.error('No se encontró el contenedor de la stage.');
@@ -365,17 +368,22 @@ function getStageAvailableWidth() {
     if (rect && Number.isFinite(rect.width) && rect.width > 0) {
       return rect.width;
     }
-    if (Number.isFinite(wrapper.clientWidth) && wrapper.clientWidth > 0) {
-      return wrapper.clientWidth;
+
+    const clientWidth = wrapper.clientWidth;
+    if (Number.isFinite(clientWidth) && clientWidth > 0) {
+      return clientWidth;
     }
   }
-  const docWidth = document.documentElement?.clientWidth;
-  if (Number.isFinite(docWidth) && docWidth > 0) {
-    return docWidth;
+
+  const viewportWidth = document.documentElement?.clientWidth;
+  if (Number.isFinite(viewportWidth) && viewportWidth > 0) {
+    return viewportWidth;
   }
+
   if (Number.isFinite(window.innerWidth) && window.innerWidth > 0) {
     return window.innerWidth;
   }
+
   return BASE_WIDTH;
 }
 
@@ -409,6 +417,23 @@ function applyLayout() {
 
   updateStageHeightFromItems(scale);
   positionSceneIndicators();
+}
+
+function setupScrollLoop() {
+  if (!stageWrapper) {
+    return;
+  }
+
+  stageWrapper.addEventListener('scroll', () => {
+    const maxScroll = stageWrapper.scrollHeight - stageWrapper.clientHeight;
+    if (maxScroll <= 0) {
+      return;
+    }
+
+    if (stageWrapper.scrollTop >= maxScroll - SCROLL_LOOP_THRESHOLD) {
+      stageWrapper.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  });
 }
 
 function ensureSceneIndicator(sceneId) {
@@ -510,6 +535,7 @@ async function initStage() {
     applyLayout();
     window.addEventListener('resize', applyLayout);
     initLayoutControls();
+    setupScrollLoop();
   } catch (error) {
     console.error('Error inicializando la stage', error);
   }
@@ -982,8 +1008,10 @@ function updateStageHeightFromItems(stageScale) {
     }
   });
 
-  const padded = Math.ceil(maxBottom + STAGE_PADDING);
-  if (padded > stageHeight + 1) {
+  const extraSpace = Math.max(STAGE_PADDING, 1700);
+  const padded = Math.ceil(maxBottom + extraSpace);
+
+  if (stageHeight !== padded) {
     stageHeight = padded;
     updateStageHeightVar();
   }

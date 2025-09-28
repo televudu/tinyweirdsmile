@@ -9,6 +9,7 @@
 - Se restauraron las posiciones originales (`config-layout.json`) para `intro`, `ciudad`, `noche`. Las entradas conservan `scalePercent` y `zIndex`; `scaleYPercent` ya no se usa.
 - `universo` se agregó debajo de `noche` con todos los assets alineados en `x` y espaciados en `y` para edición rápida.
 - `jardin` ya está montado después de `universo` con separaciones verticales similares para facilitar ajustes.
+- `fin` quedó al final con todas las piezas alineadas en `x` y separadas verticalmente.
 - Estructura actual del JSON: escenas ordenadas con sus capas; `triniti` ahora es parte de `noche`.
 
 ## Cambios recientes
@@ -23,7 +24,7 @@
 
 ## Qué revisar mañana
 1. Decidir si implementamos selección múltiple con overlay antes de duplicado.
-2. Ajustar detalles de `noche`, `universo` y `jardin` según feedback visual.
+2. Ajustar detalles de `noche`, `universo`, `jardin` y `fin` según feedback visual.
 3. Si se define la herramienta de duplicado, decidir formato de IDs (`copy`, `clone`, etc.) y si se editarán archivos.
 
 ## Recordatorios
