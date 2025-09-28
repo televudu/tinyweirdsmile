@@ -1,5 +1,5 @@
 {
-  // Escena activa: ciudad
+  // Escena activa: jardin
 
   // Escena: intro
   "intro": {
@@ -19,18 +19,20 @@
     "chicago": { "layer": "front", "x": 359.8, "y": 2875.2, "scalePercent": 100, "zIndex": 0 },
     "mies": { "layer": "front", "x": 454.54, "y": 3764.46, "scalePercent": 136.03, "zIndex": 0 },
     "mies2": { "layer": "front", "x": 335.8, "y": 4499.27, "scalePercent": 190.71, "zIndex": 0 },
-    "mies3": { "layer": "front", "x": 568.86, "y": 5321.1, "scalePercent": 127.02, "zIndex": 0 },
-    "mies4": { "layer": "front", "x": 654.63, "y": 6323.7, "scalePercent": 128.46, "zIndex": 0 },
-    "nuclear": { "layer": "front", "x": 439.7, "y": 7778.64, "scalePercent": 100, "zIndex": 0 }
+    "mies3": { "layer": "front", "x": 459.33, "y": 5311.04, "scalePercent": 127.02, "zIndex": 0 },
+    "mies4": { "layer": "front", "x": 670.37, "y": 6300.49, "scalePercent": 128.46, "zIndex": 0 },
+    "nuclear": { "layer": "front", "x": 420.39, "y": 7585.22, "scalePercent": 100, "zIndex": 0 }
   },
 
   // Escena: noche
   "noche": {
 
     // Capa: bg
-    "grid": { "layer": "bg", "x": 12.77, "y": 8011.25, "scalePercent": 135.25, "zIndex": 0 },
-    "ojos": { "layer": "bg", "x": 90.43, "y": 13754.18, "scalePercent": 125.58, "zIndex": 0 },
-    "ojos2": { "layer": "bg", "x": 91.64, "y": 14718.17, "scalePercent": 125.76, "zIndex": 0 },
+    "grid": { "layer": "bg", "x": -11.09, "y": 7776.33, "scalePercent": 138.87, "zIndex": 0 },
+    "ojos": { "layer": "bg", "x": 89.88, "y": 14862.41, "scalePercent": 125.58, "zIndex": 0 },
+    "ojos-b": { "layer": "bg", "x": 91, "y": 16792.32, "scalePercent": 125.58, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos2": { "layer": "bg", "x": 90.63, "y": 15825.24, "scalePercent": 125.76, "zIndex": 0 },
+    "ojos2-b": { "layer": "bg", "x": 87.21, "y": 17751.61, "scalePercent": 125.76, "zIndex": 0, "duplicateOf": "ojos2" },
 
     // Capa: mid
     "guera": { "layer": "mid", "x": 288.52, "y": 9591.71, "scalePercent": 95.71, "zIndex": 0 },
@@ -38,10 +40,10 @@
 
     // Capa: front
     "aura": { "layer": "front", "x": 350.72, "y": 13468.22, "scalePercent": 100, "zIndex": 1 },
-    "cochera": { "layer": "front", "x": 240.25, "y": 14877.89, "scalePercent": 114.14, "zIndex": 0 },
-    "cochera2": { "layer": "front", "x": 208.66, "y": 15818.32, "scalePercent": 144.73, "zIndex": 0 },
-    "estacionamiento": { "layer": "front", "x": 46.26, "y": 17173.79, "scalePercent": 142.9, "zIndex": 0 },
-    "hoyonegro": { "layer": "front", "x": 637.02, "y": 14085.98, "scalePercent": 100, "zIndex": 0 },
+    "cochera": { "layer": "front", "x": 245.66, "y": 14697.42, "scalePercent": 114.14, "zIndex": 0 },
+    "cochera2": { "layer": "front", "x": 228.72, "y": 15984.34, "scalePercent": 144.73, "zIndex": 0 },
+    "estacionamiento": { "layer": "front", "x": 48.38, "y": 17338.9, "scalePercent": 142.9, "zIndex": 0 },
+    "hoyonegro": { "layer": "front", "x": 551.67, "y": 13895.56, "scalePercent": 143.73, "zIndex": 0 },
     "miles1": { "layer": "front", "x": 1417.27, "y": 10031.78, "scalePercent": 93.26, "zIndex": 0 },
     "miles2": { "layer": "front", "x": 1419.18, "y": 10260.99, "scalePercent": 91.63, "zIndex": 0 },
     "mira": { "layer": "front", "x": 1319.78, "y": 18873.69, "scalePercent": 140.76, "zIndex": 0 },
@@ -50,5 +52,55 @@
     "ninja3": { "layer": "front", "x": 511.34, "y": 12937.66, "scalePercent": 100, "zIndex": 0 },
     "ojos-front": { "layer": "front", "x": 258.34, "y": 11731.52, "scalePercent": 73.08, "zIndex": 0 },
     "triniti": { "layer": "front", "x": 105.26, "y": 18938.15, "scalePercent": 59.08, "zIndex": 0 }
+  },
+
+  // Escena: universo
+  "universo": {
+
+    // Capa: bg
+    "hoyo-bg": { "layer": "bg", "x": -307, "y": 30465.93, "scalePercent": 185.82, "zIndex": 0 },
+    "supernova": { "layer": "bg", "x": -25.2, "y": 23463.68, "scalePercent": 143.29, "zIndex": 0 },
+
+    // Capa: mid
+    "esfera": { "layer": "mid", "x": 318.57, "y": 25282.78, "scalePercent": 100, "zIndex": 0 },
+    "esfera2": { "layer": "mid", "x": 619.38, "y": 25886.44, "scalePercent": 100, "zIndex": 0 },
+    "esfera3": { "layer": "mid", "x": 1215.24, "y": 26814.13, "scalePercent": 100, "zIndex": 0 },
+    "hoyo": { "layer": "mid", "x": 284.02, "y": 20132.18, "scalePercent": 149.54, "zIndex": 0 },
+    "hoyo2": { "layer": "mid", "x": 198.89, "y": 23098.26, "scalePercent": 162.28, "zIndex": 0 },
+    "hoyo3": { "layer": "mid", "x": 883.19, "y": 24407.17, "scalePercent": 132.25, "zIndex": 0 },
+    "huevo": { "layer": "mid", "x": 449.59, "y": 28007.92, "scalePercent": 165.45, "zIndex": 0 },
+    "teorica": { "layer": "mid", "x": 241.95, "y": 22321.78, "scalePercent": 100, "zIndex": 0 },
+
+    // Capa: front
+    "baile": { "layer": "front", "x": 233.76, "y": 30164.77, "scalePercent": 195.68, "zIndex": 0 },
+    "fuego": { "layer": "front", "x": 800.9, "y": 21775.8, "scalePercent": 127.17, "zIndex": 0 },
+    "hoyo3-front": { "layer": "front", "x": 519.13, "y": 29235.33, "scalePercent": 215.12, "zIndex": 0 },
+    "hoyomov": { "layer": "front", "x": 1146.4, "y": 27754.1, "scalePercent": 100, "zIndex": 0 },
+    "kirsten": { "layer": "front", "x": 845.67, "y": 31584.39, "scalePercent": 280.29, "zIndex": 0 },
+    "mirada": { "layer": "front", "x": 344.54, "y": 20740.64, "scalePercent": 115.11, "zIndex": 0 },
+    "perlas": { "layer": "front", "x": 1081.38, "y": 21046.38, "scalePercent": 125.76, "zIndex": 0 },
+    "poseido": { "layer": "front", "x": 681.36, "y": 23664.03, "scalePercent": 76.86, "zIndex": 0 },
+    "sombra": { "layer": "front", "x": 1118.27, "y": 30256.74, "scalePercent": 100, "zIndex": 0 },
+    "teorema": { "layer": "front", "x": 401.69, "y": 30816.6, "scalePercent": 100, "zIndex": 0 }
+  },
+
+  // Escena: jardin
+  "jardin": {
+
+    // Capa: bg
+    "bosco": { "layer": "bg", "x": -40.43, "y": 33080.94, "scalePercent": 102.9, "zIndex": 0 },
+
+    // Capa: mid
+    "cabeza": { "layer": "mid", "x": 679.79, "y": 35850.93, "scalePercent": 115, "zIndex": 0 },
+
+    // Capa: front
+    "dibujo": { "layer": "front", "x": 315, "y": 34883.16, "scalePercent": 187.57, "zIndex": 0 },
+    "dvndra": { "layer": "front", "x": 1425.79, "y": 33449.32, "scalePercent": 100, "zIndex": 0 },
+    "edificio": { "layer": "front", "x": 1436.36, "y": 34269.44, "scalePercent": 165.69, "zIndex": 0 },
+    "huxley": { "layer": "front", "x": 1318.79, "y": 35014.18, "scalePercent": 100, "zIndex": 1 },
+    "huxleydibujo": { "layer": "front", "x": 1446.19, "y": 35105.64, "scalePercent": 100, "zIndex": 0 },
+    "kurt": { "layer": "front", "x": 456.95, "y": 32837.54, "scalePercent": 100, "zIndex": 0 },
+    "mies": { "layer": "front", "x": 238.4, "y": 33906.68, "scalePercent": 100, "zIndex": 0 },
+    "pez": { "layer": "front", "x": 797.51, "y": 42725.15, "scalePercent": 100, "zIndex": 0 }
   }
 }

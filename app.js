@@ -148,14 +148,16 @@ function normalizeLayoutEntry(entry) {
     : undefined;
   const rawZ = Number(entry?.zIndex);
   const zIndex = Number.isFinite(rawZ) ? rawZ : 0;
-  const fillWidth = Boolean(entry?.fillWidth);
+  const duplicateOf = typeof entry?.duplicateOf === 'string' && entry.duplicateOf.trim()
+    ? entry.duplicateOf.trim().toLowerCase()
+    : undefined;
   return {
     x,
     y,
     scalePercent,
     layer,
     zIndex,
-    fillWidth,
+    duplicateOf,
   };
 }
 
@@ -179,7 +181,6 @@ function ensureLayoutEntry(asset) {
       y: 0,
       scalePercent: 100,
       zIndex: 0,
-      fillWidth: false,
     };
     return;
   }
@@ -195,8 +196,6 @@ function ensureLayoutEntry(asset) {
   if (!Number.isFinite(existing.zIndex)) {
     existing.zIndex = 0;
   }
-
-  existing.fillWidth = Boolean(existing.fillWidth);
 }
 
 function getLayoutForKey(key) {
@@ -207,7 +206,6 @@ function getLayoutForKey(key) {
       y: 0,
       scalePercent: 100,
       zIndex: 0,
-      fillWidth: false,
     };
   }
 
@@ -217,7 +215,6 @@ function getLayoutForKey(key) {
   if (!Number.isFinite(layout.zIndex)) {
     layout.zIndex = 0;
   }
-  layout.fillWidth = Boolean(layout.fillWidth);
   return layout;
 }
 
@@ -242,19 +239,10 @@ function resolveScale(layout, asset, element) {
     rect?.height && stageScale ? rect.height / stageScale : 0,
   );
 
-  let scaleX = baseScale;
-  let scaleY = baseScale;
+  const width = naturalWidth * baseScale;
+  const height = naturalHeight * baseScale;
 
-  if (layout?.fillWidth && naturalWidth > 0) {
-    const fillScale = BASE_WIDTH / naturalWidth;
-    scaleX = fillScale;
-    scaleY = fillScale;
-  }
-
-  const width = naturalWidth * scaleX;
-  const height = naturalHeight * scaleY;
-
-  return { scaleX, scaleY, width, height, naturalWidth, naturalHeight };
+  return { scaleX: baseScale, scaleY: baseScale, width, height, naturalWidth, naturalHeight };
 }
 
 function createStageItems(assets) {
@@ -296,14 +284,109 @@ function createStageItems(assets) {
   });
 }
 
+function createDuplicateStageItems() {
+  Object.entries(ITEM_LAYOUT).forEach(([key, layout]) => {
+    if (assetsByKey.has(key)) {
+      return;
+    }
+
+    const duplicateOf = typeof layout?.duplicateOf === 'string' && layout.duplicateOf.trim()
+      ? layout.duplicateOf.trim().toLowerCase()
+      : '';
+    if (!duplicateOf) {
+      return;
+    }
+
+    const [sceneId, itemId] = key.split(':');
+    if (!sceneId || !itemId) {
+      return;
+    }
+
+    let sourceKey = duplicateOf;
+    if (!duplicateOf.includes(':')) {
+      sourceKey = `${sceneId}:${duplicateOf}`;
+    }
+
+    const sourceAsset = assetsByKey.get(sourceKey);
+    if (!sourceAsset) {
+      console.warn(`No se encontró el elemento original para duplicar: ${sourceKey}`);
+      return;
+    }
+
+    const layerId = layout.layer || sourceAsset.layer;
+    const layerContainer = layerContainers.get(layerId);
+    if (!layerContainer) {
+      console.warn(`No existe contenedor para la capa ${layerId} (duplicado ${key})`);
+      return;
+    }
+
+    const duplicateAsset = {
+      filename: sourceAsset.filename,
+      scene: sceneId,
+      layer: layerId,
+      id: itemId,
+      key,
+    };
+
+    const figure = document.createElement('figure');
+    figure.className = 'story-item';
+    figure.dataset.scene = sceneId;
+    figure.dataset.layer = layerId;
+    figure.dataset.item = itemId;
+    figure.dataset.key = key;
+
+    const img = document.createElement('img');
+    img.src = `${ASSET_BASE_PATH}/${sourceAsset.filename}`;
+    img.alt = `${sceneId} ${itemId}`.replace(/-/g, ' ');
+    img.draggable = false;
+    img.loading = 'lazy';
+
+    figure.appendChild(img);
+    layerContainer.appendChild(figure);
+
+    if (!img.complete) {
+      img.addEventListener('load', () => {
+        requestAnimationFrame(() => applyLayout());
+      }, { once: true });
+    }
+
+    rememberScene(sceneId);
+    assetsByKey.set(key, duplicateAsset);
+    stageItems.push({ element: figure, asset: duplicateAsset });
+    ensureSceneIndicator(sceneId);
+    setupDragHandlers(figure, duplicateAsset);
+  });
+}
+
+function getStageAvailableWidth() {
+  const wrapper = stageEl?.parentElement;
+  if (wrapper) {
+    const rect = wrapper.getBoundingClientRect?.();
+    if (rect && Number.isFinite(rect.width) && rect.width > 0) {
+      return rect.width;
+    }
+    if (Number.isFinite(wrapper.clientWidth) && wrapper.clientWidth > 0) {
+      return wrapper.clientWidth;
+    }
+  }
+  const docWidth = document.documentElement?.clientWidth;
+  if (Number.isFinite(docWidth) && docWidth > 0) {
+    return docWidth;
+  }
+  if (Number.isFinite(window.innerWidth) && window.innerWidth > 0) {
+    return window.innerWidth;
+  }
+  return BASE_WIDTH;
+}
+
 function applyLayout() {
   if (!stageItems.length) {
     positionSceneIndicators();
     return;
   }
 
-  const availableWidth = window.innerWidth;
-  const scale = availableWidth / BASE_WIDTH;
+  const availableWidth = getStageAvailableWidth();
+  const scale = availableWidth > 0 ? availableWidth / BASE_WIDTH : 1;
   root.style.setProperty('--stage-scale', scale.toString());
 
   stageItems.forEach(({ element, asset }) => {
@@ -313,21 +396,12 @@ function applyLayout() {
     const { scaleX, scaleY } = resolveScale(layout, asset, element);
     const img = element.querySelector('img');
 
-    if (layout.fillWidth) {
-      element.style.width = `${BASE_WIDTH}px`;
-      element.style.transform = `translate(${sceneOffset.x}px, ${y}px)`;
-      if (img) {
-        img.style.width = '100%';
-        img.style.height = 'auto';
-      }
-    } else {
-      const x = sceneOffset.x + layout.x;
-      element.style.width = '';
-      element.style.transform = `translate(${x}px, ${y}px) scale(${scaleX}, ${scaleY})`;
-      if (img) {
-        img.style.width = '';
-        img.style.height = '';
-      }
+    const x = sceneOffset.x + layout.x;
+    element.style.width = '';
+    element.style.transform = `translate(${x}px, ${y}px) scale(${scaleX}, ${scaleY})`;
+    if (img) {
+      img.style.width = '';
+      img.style.height = '';
     }
 
     element.style.zIndex = `${getItemZIndex(layout, asset)}`;
@@ -432,6 +506,7 @@ async function initStage() {
       .filter(Boolean);
 
     createStageItems(assets);
+    createDuplicateStageItems();
     applyLayout();
     window.addEventListener('resize', applyLayout);
     initLayoutControls();
@@ -688,9 +763,6 @@ function startScale(event, element, asset, handle) {
   handle.setPointerCapture(event.pointerId);
 
   const layout = { ...getLayoutForKey(asset.key) };
-  if (layout.fillWidth) {
-    return;
-  }
   const rect = element.getBoundingClientRect();
   const center = {
     x: rect.left + rect.width / 2,
@@ -994,8 +1066,8 @@ function formatSceneBlock(scene, layout) {
       `"scalePercent": ${formatNumber(scalePercent)}`,
       `"zIndex": ${formatNumber(zIndex)}`,
     ];
-    if (data?.fillWidth) {
-      parts.push('"fillWidth": true');
+    if (data?.duplicateOf) {
+      parts.push(`"duplicateOf": "${data.duplicateOf}"`);
     }
     const line = `    "${itemId}": { ${parts.join(', ')} }${index === entries.length - 1 ? '' : ','}`;
     lines.push(line);
