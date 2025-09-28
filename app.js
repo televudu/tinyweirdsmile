@@ -11,6 +11,10 @@ const SCENE_OFFSETS = {
   noche: { x: 0, y: 0 },
 };
 
+const START_SCROLL_OFFSET = 2100;
+const LOOP_SCROLL_OFFSET = 0;
+const EXTRA_END_PADDING = 1000;
+
 const ITEM_LAYOUT = {};
 
 const stageWrapper = document.querySelector('[data-stage]');
@@ -25,6 +29,8 @@ const layoutToggleBtn = document.querySelector('[data-layout-toggle]');
 const layoutPanel = document.querySelector('[data-layout-panel]');
 const layoutOutput = document.querySelector('[data-layout-output]');
 const layoutCopyBtn = document.querySelector('[data-layout-copy]');
+const audioToggleBtn = document.querySelector('[data-audio-toggle]');
+const loopOverlay = document.querySelector('[data-loop-overlay]');
 
 let isLayoutMode = false;
 let activeDrag = null;
@@ -43,6 +49,12 @@ const BASE_LAYER_Z = {
 };
 
 const SCROLL_LOOP_THRESHOLD = 24;
+const SCROLL_LOOP_RESET_DELAY = 650;
+const LOOP_OVERLAY_DURATION = 180;
+
+let audioElement = null;
+let isAudioPlaying = false;
+let hasExperienceStarted = false;
 
 if (!stageEl) {
   console.error('No se encontró el contenedor de la stage.');
@@ -398,7 +410,11 @@ function applyLayout() {
   root.style.setProperty('--stage-scale', scale.toString());
 
   stageItems.forEach(({ element, asset }) => {
-    const sceneOffset = SCENE_OFFSETS[asset.scene] ?? { x: 0, y: 0 };
+    const baseOffset = SCENE_OFFSETS[asset.scene] ?? { x: 0, y: 0 };
+    const sceneOffset = {
+      x: baseOffset.x,
+      y: baseOffset.y + START_SCROLL_OFFSET,
+    };
     const layout = getLayoutForKey(asset.key);
     const y = sceneOffset.y + layout.y;
     const { scaleX, scaleY } = resolveScale(layout, asset, element);
@@ -420,19 +436,110 @@ function applyLayout() {
 }
 
 function setupScrollLoop() {
-  if (!stageWrapper) {
+  const scrollingEl = (() => {
+    if (stageWrapper && stageWrapper.scrollHeight > stageWrapper.clientHeight + 1) {
+      return stageWrapper;
+    }
+    return document.scrollingElement || document.documentElement || document.body;
+  })();
+
+  if (!scrollingEl) {
     return;
   }
 
-  stageWrapper.addEventListener('scroll', () => {
-    const maxScroll = stageWrapper.scrollHeight - stageWrapper.clientHeight;
+  let isLoopingScroll = false;
+
+  const handleScroll = () => {
+    if (isLoopingScroll) {
+      return;
+    }
+
+    const maxScroll = scrollingEl.scrollHeight - (scrollingEl === stageWrapper ? stageWrapper.clientHeight : window.innerHeight);
     if (maxScroll <= 0) {
       return;
     }
 
-    if (stageWrapper.scrollTop >= maxScroll - SCROLL_LOOP_THRESHOLD) {
-      stageWrapper.scrollTo({ top: 0, behavior: 'auto' });
+    const currentScroll = scrollingEl === stageWrapper
+      ? stageWrapper.scrollTop
+      : (window.scrollY || scrollingEl.scrollTop || 0);
+
+    if (currentScroll >= maxScroll - SCROLL_LOOP_THRESHOLD) {
+      isLoopingScroll = true;
+      fadeOverlayIn().then(() => {
+        scrollToOffset(LOOP_SCROLL_OFFSET, { smooth: false });
+        fadeOverlayOut();
+        window.setTimeout(() => {
+          isLoopingScroll = false;
+        }, SCROLL_LOOP_RESET_DELAY);
+      });
     }
+  };
+
+  const listenerTarget = scrollingEl === stageWrapper ? stageWrapper : window;
+  listenerTarget.addEventListener('scroll', handleScroll, { passive: true });
+}
+
+function updateAudioToggle() {
+  if (!audioToggleBtn) {
+    return;
+  }
+
+  audioToggleBtn.textContent = isAudioPlaying ? 'Pausar música' : 'Activar música';
+  document.body.dataset.audioState = isAudioPlaying ? 'playing' : 'paused';
+}
+
+function ensureAudioElement() {
+  if (audioElement) {
+    return audioElement;
+  }
+
+  audioElement = new Audio('audio/tinyweirdsmile.mp3');
+  audioElement.loop = true;
+  audioElement.preload = 'auto';
+  audioElement.volume = 0.6;
+  audioElement.addEventListener('playing', () => {
+    isAudioPlaying = true;
+    if (!hasExperienceStarted) {
+      hasExperienceStarted = true;
+      resetScrollToStart({ smooth: false });
+      fadeOverlayOut();
+    }
+    updateAudioToggle();
+  });
+  audioElement.addEventListener('pause', () => {
+    if (!audioElement || !audioElement.paused) {
+      return;
+    }
+    isAudioPlaying = false;
+    updateAudioToggle();
+  });
+  updateAudioToggle();
+  return audioElement;
+}
+
+function toggleAudio() {
+  const audio = ensureAudioElement();
+  if (!audio) {
+    return;
+  }
+
+  if (audio.paused) {
+    audio.play().catch((error) => {
+      console.warn('No se pudo reproducir el audio automáticamente', error);
+    });
+  } else {
+    audio.pause();
+  }
+}
+
+function initAudioControls() {
+  if (!audioToggleBtn) {
+    return;
+  }
+
+  updateAudioToggle();
+  audioToggleBtn.addEventListener('click', () => {
+    toggleAudio();
   });
 }
 
@@ -496,7 +603,7 @@ function computeSceneIndicatorPosition(sceneId) {
     return null;
   }
 
-  const y = Math.max(minY - SCENE_INDICATOR_Y_OFFSET, SCENE_INDICATOR_MIN_Y);
+  const y = Math.max((minY + START_SCROLL_OFFSET) - SCENE_INDICATOR_Y_OFFSET, SCENE_INDICATOR_MIN_Y);
   return { x: minX, y };
 }
 
@@ -535,6 +642,7 @@ async function initStage() {
     applyLayout();
     window.addEventListener('resize', applyLayout);
     initLayoutControls();
+    initAudioControls();
     setupScrollLoop();
   } catch (error) {
     console.error('Error inicializando la stage', error);
@@ -1002,13 +1110,13 @@ function updateStageHeightFromItems(stageScale) {
       return;
     }
 
-    const bottom = layout.y + height;
+    const bottom = layout.y + START_SCROLL_OFFSET + height;
     if (bottom > maxBottom) {
       maxBottom = bottom;
     }
   });
 
-  const extraSpace = Math.max(STAGE_PADDING, 1700);
+  const extraSpace = Math.max(STAGE_PADDING, START_SCROLL_OFFSET + EXTRA_END_PADDING);
   const padded = Math.ceil(maxBottom + extraSpace);
 
   if (stageHeight !== padded) {
@@ -1180,4 +1288,40 @@ function stripJsonComments(text) {
   }
 
   return result;
+}
+function scrollToOffset(offset, { smooth } = { smooth: false }) {
+  const behavior = smooth ? 'smooth' : 'auto';
+
+  if (stageWrapper && stageWrapper.scrollHeight > stageWrapper.clientHeight + 1) {
+    stageWrapper.scrollTo({ top: offset, behavior });
+  } else {
+    window.scrollTo({ top: offset, behavior });
+  }
+}
+
+function resetScrollToStart({ smooth } = { smooth: false }) {
+  scrollToOffset(START_SCROLL_OFFSET, { smooth });
+}
+
+function fadeOverlayIn() {
+  if (!loopOverlay) {
+    return Promise.resolve();
+  }
+  loopOverlay.hidden = false;
+  loopOverlay.classList.add('is-visible');
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, LOOP_OVERLAY_DURATION);
+  });
+}
+
+function fadeOverlayOut() {
+  if (!loopOverlay) {
+    return;
+  }
+  loopOverlay.classList.remove('is-visible');
+  window.setTimeout(() => {
+    if (!loopOverlay.classList.contains('is-visible')) {
+      loopOverlay.hidden = true;
+    }
+  }, LOOP_OVERLAY_DURATION);
 }

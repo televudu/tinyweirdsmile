@@ -17,6 +17,8 @@
 - `applyLayout` aplica `translate` + `scale` en todos los elementos.
 - Se agregó soporte a duplicado lógico mediante `duplicateOf` en `config-layout.json` para reutilizar assets existentes.
 - `styles.css` mantiene el stage alineado a la izquierda (`justify-content: flex-start`) con fondo plano negro.
+- Botón "Activar música" permite reproducir/pausar el loop `tinyweirdsmile.mp3`.
+- Fade rápido al inicio/fin del scroll: arrancamos en negro, primer clic activa música, posiciona en `intro` y el loop vuelve a negro antes de reiniciar.
 
 ## Herramientas pendientes / ideas
 - Selección múltiple con overlay estilo indicador de escena para mover varios ítems juntos.
@@ -25,7 +27,7 @@
 ## Qué revisar mañana
 1. Decidir si implementamos selección múltiple con overlay antes de duplicado.
 2. Ajustar detalles de `noche`, `universo`, `jardin` y `fin` según feedback visual.
-3. Si se define la herramienta de duplicado, decidir formato de IDs (`copy`, `clone`, etc.) y si se editarán archivos.
+3. Validar la sensación del loop con fade (timings, easing) y la mezcla de audio antes del release.
 
 ## Recordatorios
 - Manifest y config deben mantenerse sincronizados (para cada asset usado debe existir una entrada en `config`).

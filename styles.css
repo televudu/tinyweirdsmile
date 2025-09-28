@@ -39,6 +39,20 @@ body {
   background: #000;
 }
 
+.loop-overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  z-index: 999;
+}
+
+.loop-overlay.is-visible {
+  opacity: 1;
+}
+
 .layer {
   position: absolute;
   inset: 0;
@@ -188,6 +202,30 @@ body.layout-mode .layout-handle {
 
 body.layout-mode .story-item.is-scaling .layout-handle {
   background: rgba(255, 180, 0, 0.9);
+}
+
+.audio-toggle {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(20, 20, 20, 0.75);
+  color: #f4f4f4;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.audio-toggle:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+body[data-audio-state='playing'] .audio-toggle {
+  background: rgba(64, 192, 255, 0.2);
+  border-color: rgba(64, 192, 255, 0.6);
 }
 
 .layout-panel {
