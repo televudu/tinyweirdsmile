@@ -21,7 +21,7 @@ body {
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   overflow: auto;
   padding: 32px 0;
@@ -33,7 +33,7 @@ body {
   height: calc(var(--stage-height) * 1px);
   transform-origin: top left;
   transform: scale(var(--stage-scale));
-  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.06), transparent 65%);
+  background: #000;
 }
 
 .layer {
@@ -54,10 +54,49 @@ body {
   z-index: 3;
 }
 
+.scene-indicator-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.scene-indicator {
+  position: absolute;
+  display: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(64, 192, 255, 0.55);
+  background: rgba(64, 192, 255, 0.18);
+  color: #f4f4f4;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: top left;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+body.layout-mode .scene-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+body.layout-mode .scene-indicator.is-scene-dragging {
+  cursor: grabbing;
+  background: rgba(255, 180, 0, 0.28);
+  border-color: rgba(255, 180, 0, 0.6);
+}
+
 .story-item {
   position: absolute;
   margin: 0;
   will-change: transform;
+  transform-origin: top left;
   pointer-events: auto;
 }
 

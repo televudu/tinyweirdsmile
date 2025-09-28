@@ -1,37 +1,32 @@
 # Contexto · Tiny Weird Smile (branch `stage-refactor`)
 
 ## Qué se busca
-- Construir un scrollytelling con un único escenario (un solo contenedor) donde convivan las imágenes recortadas etiquetadas como `escena-nivel-nombre`.
-- Mantener las tres capas (`bg`, `mid`, `front`) para lograr el efecto de paralaje / profundidad.
-- Cada escena (intro, ciudad, noche, universo, jardin, pintura, fin) debería poder moverse como bloque, similar a las secciones originales, pero sin necesidad de fragmentar el DOM en múltiples secciones.
+- Scrollytelling con una única `story-stage` y capas `bg`, `mid`, `front` generadas dinámicamente.
+- Mantenimiento del layout desde un modo visual (drag/scale) con export a JSON (`config-layout.json`).
+- Preparar herramientas utilitarias: indicadores de escena, potencial selección múltiple y duplicado manual.
 
-## Cómo pensamos lograrlo
-- Generar una estructura mínima en HTML con una sola `story-stage` y tres contenedores de capa vacíos.
-- En JavaScript, tomar la lista de assets (las imágenes en `recortadas/`), interpretar la etiqueta `escena-nivel-nombre` y crear dinámicamente los nodos `<figure>` en la capa correspondiente.
-- Mantener un “layout manager” que permita:
-  - Posicionar manualmente ciertos elementos clave (por ejemplo `intro-front-hoyo`, `intro-front-llave`).
-  - Calcular posiciones por defecto para el resto (por escena y por capa), de forma que podamos desplazarlos juntos más adelante.
-- Pensar en una capa de animación que aplique parallax sobre la posición base de cada capa (por ejemplo, usando `ScrollTrigger` con offsets diferentes para `bg`, `mid`, `front`).
+## Estado del layout
+- Se restauraron las posiciones originales (`config-layout.json`) para `intro`, `ciudad`, `noche`. Las entradas conservan `scalePercent` y `zIndex`; `scaleYPercent` ya no se usa.
+- `fillWidth` sigue disponible: fuerza el ancho a 1920 px, ignora la escala manual y deja mover sólo en `y`.
+- Estructura actual del JSON: escenas ordenadas con sus capas; `triniti` ahora es parte de `noche`.
 
-## Preguntas abiertas / próximos pasos
-1. ¿Queremos seguir usando `ScrollTrigger`? Se puede trabajar con una sola sección “pinneda” y animar los offsets de cada escena, o bien con timelines que muevan grupos completos sin dividir el DOM en múltiples secciones.
-2. Definir exactamente cómo se agrupan y mueven las escenas. Una idea es encapsular cada escena en un contenedor virtual (por ejemplo, un objeto con `items` + posición base) y mover todo ese grupo sumando offsets.
-3. Necesitamos decidir si habrá auto-scroll o interacción manual, para dimensionar el loop de animaciones.
-4. Falta acordar el layout base (posición X/Y y escala) de cada escena para que no se empalmen.
+## Cambios recientes
+- Eliminada la escala vertical independiente; los handles sólo escalan proporcionalmente desde el centro.
+- `applyLayout` aplica `translate` + `scale`; si `fillWidth` está activo, define `width = 1920px` e ignora la escala.
+- `updateStageHeightFromItems` usa el alto calculado tras aplicar `fillWidth` para ajustar la altura total.
+- `styles.css` mantiene el stage alineado a la izquierda (`justify-content: flex-start`) con fondo plano negro.
 
-## Estado actual (14/03)
-- Stage única con contenedores `bg/mid/front` en `index.html`; `app.js` genera dinámicamente todas las escenas listadas en `tiny-imagenes/manifest.json`.
-- `tiny-imagenes/manifest.json` incluye las escenas `intro` y `ciudad`; los assets se copian ahí con el patrón `escena-capa-nombre`.
-- `config-layout.json` guarda posiciones/escala por escena, permite comentarios (`// Escena`, `// Capa`) y se alinea con el formato que copia el modo layout.
-- Modo layout: arrastre + handles de escala proporcional, panel oculto pero se copia automáticamente el JSON al salir del modo. Altura del stage se ajusta sola según los items.
+## Herramientas pendientes / ideas
+- Selección múltiple con overlay estilo indicador de escena para mover varios ítems juntos.
+- Duplicar ítems: por ahora se puede copiar entradas en `config-layout.json`; resta decidir si vale la pena exponerlo en UI.
+
+## Qué revisar mañana
+1. Decidir si implementamos selección múltiple con overlay antes de duplicado.
+2. Ajustar `fillWidth` según flujo real (¿necesitamos bloquear `x` completamente? ¿mostrar que ignora escala?).
+3. Seguir acomodando `noche` con los valores restaurados.
+4. Si se define la herramienta de duplicado, decidir formato de IDs (`copy`, `clone`, etc.) y si se editarán archivos.
 
 ## Recordatorios
-- Rama: `stage-refactor`. Último commit previo `Simplify stage prototype layout`.
-- Archivos clave: `index.html`, `styles.css`, `app.js`, `tiny-imagenes/manifest.json`, `config-layout.json`.
-- Las escenas deben declararse tanto en el `manifest` como en el `config` para que se rendericen; al borrar/renombrar assets hay que sincronizar ambos.
-
-## Para mañana
-1. Ordenar/posicionar la escena `ciudad` usando el modo layout y copiar los valores definitivos al config.
-2. Definir si seguimos con la siguiente escena (`noche`, `universo`, etc.) y preparar sus assets en `tiny-imagenes/`.
-3. Evaluar automatizar la generación de `manifest.json` / `config-layout.json` (script dev) para futuras iteraciones.
-4. Revisar cómo queremos agrupar escenas y offsets globales (`SCENE_OFFSETS`) de cara al scrollytelling.
+- Manifest y config deben mantenerse sincronizados (para cada asset usado debe existir una entrada en `config`).
+- El modo layout copia automáticamente el JSON al salir; mantenerlo como fuente de verdad.
+- Si se usa `fillWidth`, el asset se posiciona mediante `y` y `zIndex`; no arrastrar en `x` para evitar confusión.

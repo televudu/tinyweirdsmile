@@ -1,27 +1,54 @@
 {
+  // Escena activa: ciudad
+
   // Escena: intro
   "intro": {
 
     // Capa: front
-    "hoyo": { "layer": "front", "x": 615.61, "y": 239.23, "scalePercent": 108.51 },
-    "llave": { "layer": "front", "x": 986.69, "y": 698.26, "scalePercent": 100 }
+    "hoyo": { "layer": "front", "x": 782.38, "y": 541.02, "scalePercent": 135.78, "zIndex": 0 },
+    "llave": { "layer": "front", "x": 863.06, "y": 1978.17, "scalePercent": 112.07, "zIndex": 0 }
   },
 
   // Escena: ciudad
   "ciudad": {
 
-    // Capa: bg
-    "edificio": { "layer": "bg", "x": 480, "y": 900, "scalePercent": 100 },
-
     // Capa: mid
-    "chicago-mid": { "layer": "mid", "x": 620, "y": 1100, "scalePercent": 100 },
+    "chicago-mid": { "layer": "mid", "x": 562.74, "y": 3107.89, "scalePercent": 131.5, "zIndex": 0 },
 
     // Capa: front
-    "chicago": { "layer": "front", "x": 780, "y": 1300, "scalePercent": 100 },
-    "mies": { "layer": "front", "x": 860, "y": 1500, "scalePercent": 100 },
-    "mies2": { "layer": "front", "x": 940, "y": 1700, "scalePercent": 100 },
-    "mies3": { "layer": "front", "x": 1020, "y": 1900, "scalePercent": 100 },
-    "mies4": { "layer": "front", "x": 1100, "y": 2100, "scalePercent": 100 },
-    "nuclear": { "layer": "front", "x": 1180, "y": 2300, "scalePercent": 100 }
+    "chicago": { "layer": "front", "x": 359.8, "y": 2875.2, "scalePercent": 100, "zIndex": 0 },
+    "mies": { "layer": "front", "x": 454.54, "y": 3764.46, "scalePercent": 136.03, "zIndex": 0 },
+    "mies2": { "layer": "front", "x": 335.8, "y": 4499.27, "scalePercent": 190.71, "zIndex": 0 },
+    "mies3": { "layer": "front", "x": 568.86, "y": 5321.1, "scalePercent": 127.02, "zIndex": 0 },
+    "mies4": { "layer": "front", "x": 654.63, "y": 6323.7, "scalePercent": 128.46, "zIndex": 0 },
+    "nuclear": { "layer": "front", "x": 439.7, "y": 7778.64, "scalePercent": 100, "zIndex": 0 }
+  },
+
+  // Escena: noche
+  "noche": {
+
+    // Capa: bg
+    "grid": { "layer": "bg", "x": 12.77, "y": 8011.25, "scalePercent": 135.25, "zIndex": 0 },
+    "ojos": { "layer": "bg", "x": 90.43, "y": 13754.18, "scalePercent": 125.58, "zIndex": 0 },
+    "ojos2": { "layer": "bg", "x": 91.64, "y": 14718.17, "scalePercent": 125.76, "zIndex": 0 },
+
+    // Capa: mid
+    "guera": { "layer": "mid", "x": 288.52, "y": 9591.71, "scalePercent": 95.71, "zIndex": 0 },
+    "patrulla": { "layer": "mid", "x": 253.96, "y": 19079.3, "scalePercent": 171.31, "zIndex": 0 },
+
+    // Capa: front
+    "aura": { "layer": "front", "x": 350.72, "y": 13468.22, "scalePercent": 100, "zIndex": 1 },
+    "cochera": { "layer": "front", "x": 240.25, "y": 14877.89, "scalePercent": 114.14, "zIndex": 0 },
+    "cochera2": { "layer": "front", "x": 208.66, "y": 15818.32, "scalePercent": 144.73, "zIndex": 0 },
+    "estacionamiento": { "layer": "front", "x": 46.26, "y": 17173.79, "scalePercent": 142.9, "zIndex": 0 },
+    "hoyonegro": { "layer": "front", "x": 637.02, "y": 14085.98, "scalePercent": 100, "zIndex": 0 },
+    "miles1": { "layer": "front", "x": 1417.27, "y": 10031.78, "scalePercent": 93.26, "zIndex": 0 },
+    "miles2": { "layer": "front", "x": 1419.18, "y": 10260.99, "scalePercent": 91.63, "zIndex": 0 },
+    "mira": { "layer": "front", "x": 1319.78, "y": 18873.69, "scalePercent": 140.76, "zIndex": 0 },
+    "ninja": { "layer": "front", "x": 335.03, "y": 10735.46, "scalePercent": 131.22, "zIndex": 0 },
+    "ninja2": { "layer": "front", "x": 1121.49, "y": 11552.7, "scalePercent": 127.12, "zIndex": 2 },
+    "ninja3": { "layer": "front", "x": 511.34, "y": 12937.66, "scalePercent": 100, "zIndex": 0 },
+    "ojos-front": { "layer": "front", "x": 258.34, "y": 11731.52, "scalePercent": 73.08, "zIndex": 0 },
+    "triniti": { "layer": "front", "x": 105.26, "y": 18938.15, "scalePercent": 59.08, "zIndex": 0 }
   }
 }

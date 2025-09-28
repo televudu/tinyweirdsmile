@@ -8,6 +8,7 @@ const VALID_LAYERS = new Set(['bg', 'mid', 'front']);
 const SCENE_OFFSETS = {
   intro: { x: 0, y: 0 },
   ciudad: { x: 0, y: 0 },
+  noche: { x: 0, y: 0 },
 };
 
 const ITEM_LAYOUT = {};
@@ -17,6 +18,8 @@ const root = document.documentElement;
 const layerContainers = new Map();
 const stageItems = [];
 const assetsByKey = new Map();
+const sceneOrder = [];
+const sceneIndicators = new Map();
 const layoutToggleBtn = document.querySelector('[data-layout-toggle]');
 const layoutPanel = document.querySelector('[data-layout-panel]');
 const layoutOutput = document.querySelector('[data-layout-output]');
@@ -26,9 +29,17 @@ let isLayoutMode = false;
 let activeDrag = null;
 let currentSceneForPanel = null;
 let stageHeight = BASE_HEIGHT;
+let sceneIndicatorLayer = null;
 
 const STAGE_PADDING = 240;
 const STAGE_HEIGHT_MIN = BASE_HEIGHT;
+const SCENE_INDICATOR_Y_OFFSET = 120;
+const SCENE_INDICATOR_MIN_Y = -180;
+const BASE_LAYER_Z = {
+  bg: 100,
+  mid: 200,
+  front: 300,
+};
 
 if (!stageEl) {
   console.error('No se encontró el contenedor de la stage.');
@@ -40,6 +51,10 @@ if (!stageEl) {
     }
     layerContainers.set(layerId, layerEl);
   });
+
+  sceneIndicatorLayer = document.createElement('div');
+  sceneIndicatorLayer.className = 'scene-indicator-layer';
+  stageEl.appendChild(sceneIndicatorLayer);
 }
 
 updateStageHeightVar();
@@ -113,6 +128,7 @@ function populateLayoutFromConfig(config) {
     if (!items || typeof items !== 'object') {
       return;
     }
+    rememberScene(sceneId);
     Object.entries(items).forEach(([itemId, layout]) => {
       const sceneKey = sceneId.toLowerCase();
       const itemKey = itemId.toLowerCase();
@@ -130,7 +146,27 @@ function normalizeLayoutEntry(entry) {
   const layer = typeof entry?.layer === 'string' && entry.layer.trim()
     ? entry.layer.trim().toLowerCase()
     : undefined;
-  return { x, y, scalePercent, layer };
+  const rawZ = Number(entry?.zIndex);
+  const zIndex = Number.isFinite(rawZ) ? rawZ : 0;
+  const fillWidth = Boolean(entry?.fillWidth);
+  return {
+    x,
+    y,
+    scalePercent,
+    layer,
+    zIndex,
+    fillWidth,
+  };
+}
+
+function rememberScene(sceneId) {
+  if (!sceneId || typeof sceneId.toLowerCase !== 'function') {
+    return;
+  }
+  const normalized = sceneId.toLowerCase();
+  if (!sceneOrder.includes(normalized)) {
+    sceneOrder.push(normalized);
+  }
 }
 
 function ensureLayoutEntry(asset) {
@@ -142,6 +178,8 @@ function ensureLayoutEntry(asset) {
       x: 0,
       y: 0,
       scalePercent: 100,
+      zIndex: 0,
+      fillWidth: false,
     };
     return;
   }
@@ -149,14 +187,79 @@ function ensureLayoutEntry(asset) {
   if (!existing.layer) {
     existing.layer = asset.layer;
   }
+
+  if (!Number.isFinite(existing.scalePercent)) {
+    existing.scalePercent = 100;
+  }
+
+  if (!Number.isFinite(existing.zIndex)) {
+    existing.zIndex = 0;
+  }
+
+  existing.fillWidth = Boolean(existing.fillWidth);
 }
 
 function getLayoutForKey(key) {
-  return ITEM_LAYOUT[key] ?? { x: 0, y: 0, scalePercent: 100 };
+  const layout = ITEM_LAYOUT[key];
+  if (!layout) {
+    return {
+      x: 0,
+      y: 0,
+      scalePercent: 100,
+      zIndex: 0,
+      fillWidth: false,
+    };
+  }
+
+  if (!Number.isFinite(layout.scalePercent)) {
+    layout.scalePercent = 100;
+  }
+  if (!Number.isFinite(layout.zIndex)) {
+    layout.zIndex = 0;
+  }
+  layout.fillWidth = Boolean(layout.fillWidth);
+  return layout;
+}
+
+function getItemZIndex(layout, asset) {
+  const base = BASE_LAYER_Z[asset.layer] ?? 0;
+  const offset = Number(layout?.zIndex);
+  return base + (Number.isFinite(offset) ? offset : 0);
+}
+
+function resolveScale(layout, asset, element) {
+  const baseScale = (Number(layout?.scalePercent) || 100) / 100;
+  const img = element?.querySelector('img');
+  const rect = element?.getBoundingClientRect?.();
+  const stageScale = getStageScale();
+
+  const naturalWidth = getNaturalDimension(
+    img?.naturalWidth,
+    rect?.width && stageScale ? rect.width / stageScale : 0,
+  );
+  const naturalHeight = getNaturalDimension(
+    img?.naturalHeight,
+    rect?.height && stageScale ? rect.height / stageScale : 0,
+  );
+
+  let scaleX = baseScale;
+  let scaleY = baseScale;
+
+  if (layout?.fillWidth && naturalWidth > 0) {
+    const fillScale = BASE_WIDTH / naturalWidth;
+    scaleX = fillScale;
+    scaleY = fillScale;
+  }
+
+  const width = naturalWidth * scaleX;
+  const height = naturalHeight * scaleY;
+
+  return { scaleX, scaleY, width, height, naturalWidth, naturalHeight };
 }
 
 function createStageItems(assets) {
   assets.forEach((asset) => {
+    rememberScene(asset.scene);
     const layerContainer = layerContainers.get(asset.layer);
     if (!layerContainer) {
       console.warn(`No existe contenedor para la capa ${asset.layer}`);
@@ -188,12 +291,14 @@ function createStageItems(assets) {
     ensureLayoutEntry(asset);
     stageItems.push({ element: figure, asset });
     assetsByKey.set(asset.key, asset);
+    ensureSceneIndicator(asset.scene);
     setupDragHandlers(figure, asset);
   });
 }
 
 function applyLayout() {
   if (!stageItems.length) {
+    positionSceneIndicators();
     return;
   }
 
@@ -204,14 +309,114 @@ function applyLayout() {
   stageItems.forEach(({ element, asset }) => {
     const sceneOffset = SCENE_OFFSETS[asset.scene] ?? { x: 0, y: 0 };
     const layout = getLayoutForKey(asset.key);
-    const x = sceneOffset.x + layout.x;
     const y = sceneOffset.y + layout.y;
-    const itemScale = (layout.scalePercent ?? 100) / 100;
+    const { scaleX, scaleY } = resolveScale(layout, asset, element);
+    const img = element.querySelector('img');
 
-    element.style.transform = `translate(${x}px, ${y}px) scale(${itemScale})`;
+    if (layout.fillWidth) {
+      element.style.width = `${BASE_WIDTH}px`;
+      element.style.transform = `translate(${sceneOffset.x}px, ${y}px)`;
+      if (img) {
+        img.style.width = '100%';
+        img.style.height = 'auto';
+      }
+    } else {
+      const x = sceneOffset.x + layout.x;
+      element.style.width = '';
+      element.style.transform = `translate(${x}px, ${y}px) scale(${scaleX}, ${scaleY})`;
+      if (img) {
+        img.style.width = '';
+        img.style.height = '';
+      }
+    }
+
+    element.style.zIndex = `${getItemZIndex(layout, asset)}`;
   });
 
   updateStageHeightFromItems(scale);
+  positionSceneIndicators();
+}
+
+function ensureSceneIndicator(sceneId) {
+  if (!sceneIndicatorLayer || !sceneId) {
+    return null;
+  }
+
+  const sceneKey = sceneId.toLowerCase();
+  if (sceneIndicators.has(sceneKey)) {
+    return sceneIndicators.get(sceneKey);
+  }
+
+  const indicator = document.createElement('div');
+  indicator.className = 'scene-indicator';
+  indicator.dataset.sceneIndicator = sceneKey;
+  indicator.textContent = sceneKey;
+  indicator.addEventListener('pointerdown', (event) => {
+    if (!isLayoutMode) {
+      return;
+    }
+    startSceneDrag(event, sceneKey, indicator);
+  });
+
+  sceneIndicatorLayer.appendChild(indicator);
+  sceneIndicators.set(sceneKey, indicator);
+  return indicator;
+}
+
+function getSceneItemKeys(sceneId) {
+  const target = sceneId?.toLowerCase?.();
+  if (!target) {
+    return [];
+  }
+
+  return stageItems
+    .filter(({ asset }) => asset.scene === target)
+    .map(({ asset }) => asset.key);
+}
+
+function computeSceneIndicatorPosition(sceneId) {
+  const itemKeys = getSceneItemKeys(sceneId);
+  if (!itemKeys.length) {
+    return null;
+  }
+
+  let minX = Number.POSITIVE_INFINITY;
+  let minY = Number.POSITIVE_INFINITY;
+
+  itemKeys.forEach((key) => {
+    const layout = getLayoutForKey(key);
+    if (layout.x < minX) {
+      minX = layout.x;
+    }
+    if (layout.y < minY) {
+      minY = layout.y;
+    }
+  });
+
+  if (!Number.isFinite(minX) || !Number.isFinite(minY)) {
+    return null;
+  }
+
+  const y = Math.max(minY - SCENE_INDICATOR_Y_OFFSET, SCENE_INDICATOR_MIN_Y);
+  return { x: minX, y };
+}
+
+function positionSceneIndicators() {
+  if (!sceneIndicatorLayer) {
+    return;
+  }
+
+  sceneIndicators.forEach((indicator, sceneId) => {
+    const position = computeSceneIndicatorPosition(sceneId);
+    if (!position) {
+      indicator.hidden = true;
+      return;
+    }
+
+    indicator.hidden = false;
+    const clampedX = Math.max(position.x, 0);
+    indicator.style.transform = `translate(${clampedX}px, ${position.y}px)`;
+  });
 }
 
 async function initStage() {
@@ -272,10 +477,7 @@ function setLayoutMode(enabled) {
     void copyLayoutToClipboard();
   } else {
     const scene = currentSceneForPanel || stageItems[0]?.asset.scene;
-    if (scene) {
-      const sceneLayout = exportSceneLayout(scene);
-      updateLayoutPanel(scene, sceneLayout);
-    }
+    updateLayoutPanel(scene ?? null);
   }
 }
 
@@ -287,6 +489,40 @@ function setupDragHandlers(element, asset) {
     }
     startDrag(event, element, asset);
   });
+}
+
+function startSceneDrag(event, sceneId, indicator) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const itemKeys = getSceneItemKeys(sceneId);
+  if (!itemKeys.length) {
+    return;
+  }
+
+  indicator.setPointerCapture?.(event.pointerId);
+
+  const sceneLayouts = itemKeys.map((key) => ({
+    key,
+    layout: { ...getLayoutForKey(key) },
+  }));
+
+  activeDrag = {
+    mode: 'scene',
+    pointerId: event.pointerId,
+    element: indicator,
+    scene: sceneId,
+    captureTarget: indicator,
+    origin: { x: event.clientX, y: event.clientY },
+    sceneLayouts,
+  };
+
+  indicator.classList.add('is-scene-dragging');
+  indicator.addEventListener('pointermove', onDragMove);
+  indicator.addEventListener('pointerup', onDragEnd);
+  indicator.addEventListener('pointercancel', onDragEnd);
+
+  updateLayoutPanel(sceneId);
 }
 
 function startDrag(event, element, asset) {
@@ -320,6 +556,8 @@ function onDragMove(event) {
     handleMoveDrag(event);
   } else if (activeDrag.mode === 'scale') {
     handleScaleDrag(event);
+  } else if (activeDrag.mode === 'scene') {
+    handleSceneDrag(event);
   }
 }
 
@@ -338,8 +576,9 @@ function finishActiveDrag() {
 
   const { element, asset, pointerId, captureTarget, mode } = activeDrag;
 
-  element.classList.remove('is-dragging');
-  element.classList.remove('is-scaling');
+  element?.classList.remove('is-dragging');
+  element?.classList.remove('is-scaling');
+  element?.classList.remove('is-scene-dragging');
 
   if (captureTarget && pointerId !== undefined && captureTarget.hasPointerCapture?.(pointerId)) {
     captureTarget.releasePointerCapture(pointerId);
@@ -349,29 +588,68 @@ function finishActiveDrag() {
   captureTarget?.removeEventListener('pointerup', onDragEnd);
   captureTarget?.removeEventListener('pointercancel', onDragEnd);
 
-  const sceneLayout = exportSceneLayout(asset.scene);
-  console.info(`Layout actualizado (${asset.scene})`, sceneLayout);
-  updateLayoutPanel(asset.scene, sceneLayout);
+  let sceneId = null;
+  if (mode === 'scene') {
+    sceneId = activeDrag.scene;
+  } else if (asset?.scene) {
+    sceneId = asset.scene;
+  }
+
+  if (sceneId) {
+    const sceneLayout = exportSceneLayout(sceneId);
+    console.info(`Layout actualizado (${sceneId})`, sceneLayout);
+    updateLayoutPanel(sceneId);
+  }
 
   activeDrag = null;
 }
 
-function exportSceneLayout(scene) {
+function exportAllScenesLayout() {
   const result = {};
+
   Object.entries(ITEM_LAYOUT).forEach(([key, layout]) => {
     const [sceneId, itemId] = key.split(':');
-    if (sceneId === scene) {
-      const entry = { ...layout };
-      if (!entry.layer) {
-        const assetInfo = assetsByKey.get(key);
-        if (assetInfo?.layer) {
-          entry.layer = assetInfo.layer;
-        }
+    if (!sceneId || !itemId) {
+      return;
+    }
+
+    const sceneKey = sceneId.toLowerCase();
+    const itemKey = itemId.toLowerCase();
+    if (!result[sceneKey]) {
+      result[sceneKey] = {};
+    }
+
+    const entry = { ...layout };
+    if (!entry.layer) {
+      const assetInfo = assetsByKey.get(`${sceneKey}:${itemKey}`);
+      if (assetInfo?.layer) {
+        entry.layer = assetInfo.layer;
       }
-      result[itemId] = entry;
+    }
+
+    result[sceneKey][itemKey] = entry;
+  });
+
+  sceneOrder.forEach((sceneId) => {
+    if (!result[sceneId]) {
+      result[sceneId] = {};
     }
   });
+
   return result;
+}
+
+function exportSceneLayout(scene) {
+  const sceneKey = scene?.toLowerCase?.();
+  if (!sceneKey) {
+    return {};
+  }
+
+  const allLayouts = exportAllScenesLayout();
+  const layout = allLayouts[sceneKey] ?? {};
+  return Object.fromEntries(
+    Object.entries(layout).map(([itemId, entry]) => [itemId, { ...entry }]),
+  );
 }
 
 function getStageScale() {
@@ -410,10 +688,24 @@ function startScale(event, element, asset, handle) {
   handle.setPointerCapture(event.pointerId);
 
   const layout = { ...getLayoutForKey(asset.key) };
+  if (layout.fillWidth) {
+    return;
+  }
   const rect = element.getBoundingClientRect();
   const center = {
     x: rect.left + rect.width / 2,
     y: rect.top + rect.height / 2,
+  };
+  const stageScale = getStageScale();
+  const img = element.querySelector('img');
+  const naturalWidth = getNaturalDimension(img?.naturalWidth, rect.width / stageScale);
+  const naturalHeight = getNaturalDimension(img?.naturalHeight, rect.height / stageScale);
+  const startScale = (layout.scalePercent ?? 100) / 100;
+  const startWidth = Math.max(naturalWidth * startScale, 1);
+  const startHeight = Math.max(naturalHeight * startScale, 1);
+  const layoutCenter = {
+    x: layout.x + startWidth / 2,
+    y: layout.y + startHeight / 2,
   };
   const distance = Math.hypot(event.clientX - center.x, event.clientY - center.y);
 
@@ -427,6 +719,8 @@ function startScale(event, element, asset, handle) {
     layoutStart: { ...layout },
     scaleCenter: center,
     startDistance: distance || 1,
+    assetSize: { width: naturalWidth, height: naturalHeight },
+    layoutCenter,
   };
 
   element.classList.add('is-scaling');
@@ -469,16 +763,60 @@ function handleScaleDrag(event) {
   const minScale = 5;
   const maxScale = 800;
 
+  const startScale = activeDrag.layoutStart.scalePercent ?? 100;
+
   const nextScalePercent = clamp(
-    (activeDrag.layoutStart.scalePercent ?? 100) * ratio,
+    startScale * ratio,
     minScale,
     maxScale,
   );
 
+  const naturalWidth = activeDrag.assetSize?.width;
+  const naturalHeight = activeDrag.assetSize?.height;
+  const layoutCenter = activeDrag.layoutCenter;
+  const nextScale = nextScalePercent / 100;
+
+  let nextX = activeDrag.layoutStart.x;
+  let nextY = activeDrag.layoutStart.y;
+
+  if (
+    layoutCenter
+    && Number.isFinite(naturalWidth) && naturalWidth > 0
+    && Number.isFinite(naturalHeight) && naturalHeight > 0
+  ) {
+    const newWidth = naturalWidth * nextScale;
+    const newHeight = naturalHeight * nextScale;
+    nextX = layoutCenter.x - newWidth / 2;
+    nextY = layoutCenter.y - newHeight / 2;
+  }
+
   ITEM_LAYOUT[activeDrag.asset.key] = {
-    ...activeDrag.layoutStart,
+    ...getLayoutForKey(activeDrag.asset.key),
     scalePercent: nextScalePercent,
+    x: nextX,
+    y: nextY,
   };
+
+  applyLayout();
+}
+
+function handleSceneDrag(event) {
+  if (!activeDrag || activeDrag.mode !== 'scene') {
+    return;
+  }
+
+  const scale = getStageScale();
+  const deltaX = (event.clientX - activeDrag.origin.x) / scale;
+  const deltaY = (event.clientY - activeDrag.origin.y) / scale;
+
+  activeDrag.sceneLayouts.forEach(({ key, layout: startLayout }) => {
+    const current = { ...ITEM_LAYOUT[key] };
+    ITEM_LAYOUT[key] = {
+      ...current,
+      x: startLayout.x + deltaX,
+      y: startLayout.y + deltaY,
+    };
+  });
 
   applyLayout();
 }
@@ -487,13 +825,28 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-function updateLayoutPanel(scene, layout) {
+function getNaturalDimension(primary, fallback) {
+  if (Number.isFinite(primary) && primary > 0) {
+    return primary;
+  }
+  if (Number.isFinite(fallback) && fallback > 0) {
+    return fallback;
+  }
+  return 1;
+}
+
+function createLayoutExportString(activeScene) {
+  const allLayouts = exportAllScenesLayout();
+  return formatLayoutExport(allLayouts, { activeScene });
+}
+
+function updateLayoutPanel(scene) {
   if (!layoutOutput) {
     return;
   }
 
-  currentSceneForPanel = scene;
-  const formatted = formatSceneLayout(scene, layout);
+  currentSceneForPanel = scene ?? null;
+  const formatted = createLayoutExportString(currentSceneForPanel);
   layoutOutput.textContent = formatted;
 
   if (layoutCopyBtn) {
@@ -504,16 +857,19 @@ function updateLayoutPanel(scene, layout) {
 }
 
 async function copyLayoutToClipboard() {
-  if (!layoutOutput || !navigator?.clipboard) {
+  if (!navigator?.clipboard) {
     return;
   }
 
-  const text = layoutOutput.textContent ?? '';
+  const text = createLayoutExportString(currentSceneForPanel);
   if (!text.trim()) {
     return;
   }
 
   try {
+    if (layoutOutput) {
+      layoutOutput.textContent = text;
+    }
     await navigator.clipboard.writeText(text);
     if (layoutCopyBtn) {
       layoutCopyBtn.dataset.state = 'copied';
@@ -538,24 +894,17 @@ function updateStageHeightFromItems(stageScale) {
     return;
   }
 
-  const fallbackScale = stageScale || getStageScale();
   let maxBottom = BASE_HEIGHT;
 
   stageItems.forEach(({ element, asset }) => {
     const layout = getLayoutForKey(asset.key);
-    const itemScale = (layout.scalePercent ?? 100) / 100;
+    const { height } = resolveScale(layout, asset, element);
     const img = element.querySelector('img');
     if (!img) {
       return;
     }
 
-    let assetHeight = img.naturalHeight || 0;
-    if (!assetHeight) {
-      const rect = img.getBoundingClientRect();
-      assetHeight = rect.height && fallbackScale ? rect.height / fallbackScale : 0;
-    }
-
-    const bottom = layout.y + assetHeight * itemScale;
+    const bottom = layout.y + height;
     if (bottom > maxBottom) {
       maxBottom = bottom;
     }
@@ -568,7 +917,53 @@ function updateStageHeightFromItems(stageScale) {
   }
 }
 
-function formatSceneLayout(scene, layout) {
+function formatLayoutExport(layoutByScene, { activeScene } = {}) {
+  const scenesInOrder = getOrderedScenes(layoutByScene);
+  const lines = ['{'];
+
+  if (activeScene) {
+    lines.push(`  // Escena activa: ${activeScene}`);
+    lines.push('');
+  }
+
+  scenesInOrder.forEach((sceneId, index) => {
+    const sceneLines = formatSceneBlock(sceneId, layoutByScene[sceneId]);
+    if (index < scenesInOrder.length - 1) {
+      const lastIndex = sceneLines.length - 1;
+      sceneLines[lastIndex] = `${sceneLines[lastIndex]},`;
+    }
+    lines.push(...sceneLines);
+    if (index < scenesInOrder.length - 1) {
+      lines.push('');
+    }
+  });
+
+  lines.push('}');
+  return lines.join('\n');
+}
+
+function getOrderedScenes(layoutByScene) {
+  const ordered = [];
+  const seen = new Set();
+
+  sceneOrder.forEach((sceneId) => {
+    if (Object.prototype.hasOwnProperty.call(layoutByScene, sceneId)) {
+      ordered.push(sceneId);
+      seen.add(sceneId);
+    }
+  });
+
+  Object.keys(layoutByScene).forEach((sceneId) => {
+    if (!seen.has(sceneId)) {
+      ordered.push(sceneId);
+      seen.add(sceneId);
+    }
+  });
+
+  return ordered;
+}
+
+function formatSceneBlock(scene, layout) {
   const entries = Object.entries(layout || {})
     .sort(([aId, a], [bId, b]) => {
       const layerOrder = ['bg', 'mid', 'front'];
@@ -576,28 +971,38 @@ function formatSceneLayout(scene, layout) {
       return layerDiff !== 0 ? layerDiff : aId.localeCompare(bId);
     });
 
-  const output = [];
-  output.push('{');
-  output.push(`  // Escena: ${scene}`);
-  output.push(`  "${scene}": {`);
+  const lines = [];
+  lines.push(`  // Escena: ${scene}`);
+  lines.push(`  "${scene}": {`);
 
   let currentLayer = null;
   entries.forEach(([itemId, data], index) => {
     const layer = data?.layer ?? 'front';
     if (layer !== currentLayer) {
       currentLayer = layer;
-      output.push('');
-      output.push(`    // Capa: ${layer}`);
+      lines.push('');
+      lines.push(`    // Capa: ${layer}`);
     }
 
-    const parts = [`"layer": "${layer}"`, `"x": ${formatNumber(data?.x)}`, `"y": ${formatNumber(data?.y)}`, `"scalePercent": ${formatNumber(data?.scalePercent ?? 100)}`];
+    const scalePercent = data?.scalePercent ?? 100;
+    const zIndex = data?.zIndex ?? 0;
+
+    const parts = [
+      `"layer": "${layer}"`,
+      `"x": ${formatNumber(data?.x)}`,
+      `"y": ${formatNumber(data?.y)}`,
+      `"scalePercent": ${formatNumber(scalePercent)}`,
+      `"zIndex": ${formatNumber(zIndex)}`,
+    ];
+    if (data?.fillWidth) {
+      parts.push('"fillWidth": true');
+    }
     const line = `    "${itemId}": { ${parts.join(', ')} }${index === entries.length - 1 ? '' : ','}`;
-    output.push(line);
+    lines.push(line);
   });
 
-  output.push('  }');
-  output.push('}');
-  return output.join('\n');
+  lines.push('  }');
+  return lines;
 }
 
 function formatNumber(value) {
