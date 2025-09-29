@@ -1,5 +1,5 @@
 {
-  // Escena activa: fin
+  // Escena activa: noche
 
   // Escena: intro
   "intro": {
@@ -36,6 +36,7 @@
 
     // Capa: mid
     "guera": { "layer": "mid", "x": 319.45, "y": 7729.47, "scalePercent": 116.21, "zIndex": 0 },
+    "ojos-front": { "layer": "mid", "x": 230.55, "y": 9744.45, "scalePercent": 73.08, "zIndex": 0 },
     "patrulla": { "layer": "mid", "x": 206.65, "y": 16602.18, "scalePercent": 171.31, "zIndex": 0 },
 
     // Capa: front
@@ -50,7 +51,6 @@
     "ninja": { "layer": "front", "x": 260.74, "y": 10162.54, "scalePercent": 131.22, "zIndex": 0 },
     "ninja2": { "layer": "front", "x": 1044.79, "y": 10886.52, "scalePercent": 127.12, "zIndex": 2 },
     "ninja3": { "layer": "front", "x": 597.96, "y": 12326.43, "scalePercent": 100, "zIndex": 0 },
-    "ojos-front": { "layer": "front", "x": 184.05, "y": 11158.6, "scalePercent": 73.08, "zIndex": 0 },
     "triniti": { "layer": "front", "x": 72.65, "y": 18237.56, "scalePercent": 64.64, "zIndex": 0 }
   },
 
@@ -76,7 +76,6 @@
     "fuego": { "layer": "front", "x": 1005.98, "y": 21633.09, "scalePercent": 127.17, "zIndex": 0 },
     "hoyo3-front": { "layer": "front", "x": 517.65, "y": 28610.82, "scalePercent": 215.12, "zIndex": 0 },
     "hoyomov": { "layer": "front", "x": 1243.65, "y": 27009.83, "scalePercent": 100, "zIndex": 0 },
-    "kirsten": { "layer": "front", "x": 1041.67, "y": 32380.19, "scalePercent": 81.96, "zIndex": 0 },
     "mirada": { "layer": "front", "x": 333.61, "y": 20645.39, "scalePercent": 115.11, "zIndex": 0 },
     "perlas": { "layer": "front", "x": 1109.06, "y": 20894.1, "scalePercent": 125.76, "zIndex": 0 },
     "poseido": { "layer": "front", "x": 657.33, "y": 23871.36, "scalePercent": 76.86, "zIndex": 0 },
