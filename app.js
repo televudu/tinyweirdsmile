@@ -31,6 +31,7 @@ const layoutOutput = document.querySelector('[data-layout-output]');
 const layoutCopyBtn = document.querySelector('[data-layout-copy]');
 const audioToggleBtn = document.querySelector('[data-audio-toggle]');
 const loopOverlay = document.querySelector('[data-loop-overlay]');
+const titleScreen = document.querySelector('[data-title-screen]');
 
 let isLayoutMode = false;
 let activeDrag = null;
@@ -499,11 +500,6 @@ function ensureAudioElement() {
   audioElement.volume = 0.6;
   audioElement.addEventListener('playing', () => {
     isAudioPlaying = true;
-    if (!hasExperienceStarted) {
-      hasExperienceStarted = true;
-      resetScrollToStart({ smooth: false });
-      fadeOverlayOut();
-    }
     updateAudioToggle();
   });
   audioElement.addEventListener('pause', () => {
@@ -540,6 +536,17 @@ function initAudioControls() {
   updateAudioToggle();
   audioToggleBtn.addEventListener('click', () => {
     toggleAudio();
+  });
+}
+
+function initTitleScreen() {
+  if (!titleScreen) {
+    document.body.classList.add('has-experience-started');
+    return;
+  }
+
+  titleScreen.addEventListener('click', () => {
+    void startExperience();
   });
 }
 
@@ -643,6 +650,7 @@ async function initStage() {
     window.addEventListener('resize', applyLayout);
     initLayoutControls();
     initAudioControls();
+    initTitleScreen();
     setupScrollLoop();
   } catch (error) {
     console.error('Error inicializando la stage', error);
@@ -1289,14 +1297,53 @@ function stripJsonComments(text) {
 
   return result;
 }
-function scrollToOffset(offset, { smooth } = { smooth: false }) {
-  const behavior = smooth ? 'smooth' : 'auto';
+function scrollToOffset(offset, { smooth = false, duration = 0 } = {}) {
+  const container = stageWrapper && stageWrapper.scrollHeight > stageWrapper.clientHeight + 1
+    ? stageWrapper
+    : null;
 
-  if (stageWrapper && stageWrapper.scrollHeight > stageWrapper.clientHeight + 1) {
-    stageWrapper.scrollTo({ top: offset, behavior });
-  } else {
-    window.scrollTo({ top: offset, behavior });
+  if (!smooth || duration <= 0) {
+    if (container) {
+      container.scrollTo({ top: offset, behavior: smooth ? 'smooth' : 'auto' });
+    } else {
+      window.scrollTo({ top: offset, behavior: smooth ? 'smooth' : 'auto' });
+    }
+    return;
   }
+
+  const start = container ? container.scrollTop : window.scrollY;
+  const distance = offset - start;
+  if (Math.abs(distance) < 0.5) {
+    if (container) {
+      container.scrollTo({ top: offset, behavior: 'auto' });
+    } else {
+      window.scrollTo({ top: offset, behavior: 'auto' });
+    }
+    return;
+  }
+
+  const startTime = performance.now();
+
+  const easeInOut = (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
+
+  const step = (now) => {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easeInOut(progress);
+    const next = start + distance * eased;
+
+    if (container) {
+      container.scrollTop = next;
+    } else {
+      window.scrollTo(0, next);
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  };
+
+  requestAnimationFrame(step);
 }
 
 function resetScrollToStart({ smooth } = { smooth: false }) {
@@ -1324,4 +1371,65 @@ function fadeOverlayOut() {
       loopOverlay.hidden = true;
     }
   }, LOOP_OVERLAY_DURATION);
+}
+
+function scrollToItemCenter(sceneId, itemId, { smooth = true, duration = 800 } = {}) {
+  const itemEntry = stageItems.find(({ asset }) => asset.scene === sceneId && asset.id === itemId);
+  if (!itemEntry?.element) {
+    resetScrollToStart({ smooth });
+    return;
+  }
+
+  const container = stageWrapper && stageWrapper.scrollHeight > stageWrapper.clientHeight + 1
+    ? stageWrapper
+    : null;
+
+  window.requestAnimationFrame(() => {
+    const elementRect = itemEntry.element.getBoundingClientRect();
+    const containerRect = container ? container.getBoundingClientRect() : { top: 0 };
+    const viewportHeight = container ? container.clientHeight : window.innerHeight;
+    const currentScroll = container ? container.scrollTop : window.scrollY;
+    const target = Math.max(
+      currentScroll + (elementRect.top - containerRect.top) - (viewportHeight / 2) + (elementRect.height / 2),
+      0,
+    );
+
+    scrollToOffset(target, { smooth, duration });
+  });
+}
+
+function fadeOutTitleScreen() {
+  if (!titleScreen) {
+    return Promise.resolve();
+  }
+  titleScreen.classList.add('is-fading-out');
+  return new Promise((resolve) => {
+    window.setTimeout(() => {
+      titleScreen.hidden = true;
+      titleScreen.classList.remove('is-fading-out');
+      resolve();
+    }, 250);
+  });
+}
+
+async function startExperience() {
+  if (hasExperienceStarted) {
+    toggleAudio();
+    return;
+  }
+
+  const audio = ensureAudioElement();
+  try {
+    await audio.play();
+  } catch (error) {
+    console.warn('No se pudo reproducir el audio automáticamente', error);
+  }
+
+  hasExperienceStarted = true;
+  document.body.classList.add('has-experience-started');
+  scrollToOffset(0, { smooth: false });
+  await fadeOutTitleScreen();
+  window.setTimeout(() => {
+    scrollToItemCenter('intro', 'hoyo', { smooth: true, duration: 1200 });
+  }, 200);
 }

@@ -17,8 +17,8 @@
 - `applyLayout` aplica `translate` + `scale` en todos los elementos.
 - Se agregó soporte a duplicado lógico mediante `duplicateOf` en `config-layout.json` para reutilizar assets existentes.
 - `styles.css` mantiene el stage alineado a la izquierda (`justify-content: flex-start`) con fondo plano negro.
-- Botón "Activar música" permite reproducir/pausar el loop `tinyweirdsmile.mp3`.
-- Fade rápido al inicio/fin del scroll: arrancamos en negro, primer clic activa música, posiciona en `intro` y el loop vuelve a negro antes de reiniciar.
+- Pantalla de título con botón "Entrar" que activa el track y centra `intro:hoyo`; el botón de audio queda disponible después.
+- Fade rápido al final del scroll: cubre el retorno al inicio sin mostrar el salto.
 
 ## Herramientas pendientes / ideas
 - Selección múltiple con overlay estilo indicador de escena para mover varios ítems juntos.
