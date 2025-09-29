@@ -34,3 +34,6 @@
 ## Recordatorios
 - Manifest y config deben mantenerse sincronizados (para cada asset usado debe existir una entrada en `config`).
 - El modo layout copia automáticamente el JSON al salir; mantenerlo como fuente de verdad.
+- Capa `ninja3` tiene clones `ghost1-3` ocultos (`hidden: true`); activar manualmente si se reintroduce el efecto.
+- Paralaje normalizado: desplazamientos basados en scroll base para compatibilidad cross-browser.
+- Música reproduce `tinyweirdsmile.mp3` seguido de `tinyweirdsmile-b.mp3` en bucle.

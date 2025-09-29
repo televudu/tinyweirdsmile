@@ -330,6 +330,7 @@ function createStageItems(assets) {
     assetsByKey.set(asset.key, asset);
     ensureSceneIndicator(asset.scene);
     setupDragHandlers(figure, asset);
+    setupInteractiveHandlers(figure, asset);
   });
 }
 
@@ -404,6 +405,7 @@ function createDuplicateStageItems() {
     stageItems.push({ element: figure, asset: duplicateAsset });
     ensureSceneIndicator(sceneId);
     setupDragHandlers(figure, duplicateAsset);
+    setupInteractiveHandlers(figure, duplicateAsset);
   });
 }
 
@@ -794,6 +796,21 @@ function setupDragHandlers(element, asset) {
     }
     startDrag(event, element, asset);
   });
+}
+
+function setupInteractiveHandlers(element, asset) {
+  if (asset.scene === 'intro' && asset.id === 'hoyo') {
+    element.addEventListener('click', handleIntroHoyoClick);
+  }
+}
+
+function handleIntroHoyoClick(event) {
+  if (isLayoutMode) {
+    return;
+  }
+
+  event.preventDefault();
+  toggleAudio();
 }
 
 function startSceneDrag(event, sceneId, indicator) {
