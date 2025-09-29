@@ -17,10 +17,10 @@
 - `applyLayout` aplica `translate` + `scale` en todos los elementos.
 - Se agregó soporte a duplicado lógico mediante `duplicateOf` en `config-layout.json` para reutilizar assets existentes.
 - `styles.css` mantiene el stage alineado a la izquierda (`justify-content: flex-start`) con fondo plano negro.
-- Pantalla de título con botón "Entrar" que activa el track y centra `intro:hoyo`; el botón de audio queda disponible después.
+- Pantalla de título activa la playlist y centra `intro:hoyo`; la música alterna `tinyweirdsmile.mp3` y `tinyweirdsmile-b.mp3` en loop.
 - Fade rápido al final del scroll: cubre el retorno al inicio sin mostrar el salto.
 - Paralaje por capa (`bg` más lento, `mid` intermedio, `front` full); cada item puede sobrescribir con `parallaxFactor` en el layout.
-- Overlay de glow (`screen-glow`) fijo con pulso verde tenue para ambientar.
+- Los ítems aceptan `hidden` y `parallaxFactor` en `config-layout.json` para ocultarlos o ajustar su desplazamiento.
 
 ## Herramientas pendientes / ideas
 - Selección múltiple con overlay estilo indicador de escena para mover varios ítems juntos.

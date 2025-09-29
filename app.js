@@ -61,9 +61,15 @@ const PARALLAX_FACTORS = {
   front: 1,
 };
 
+const AUDIO_TRACKS = [
+  'audio/tinyweirdsmile.mp3',
+  'audio/tinyweirdsmile-b.mp3',
+];
+
 let audioElement = null;
 let isAudioPlaying = false;
 let hasExperienceStarted = false;
+let currentAudioTrackIndex = 0;
 
 if (!stageEl) {
   console.error('No se encontró el contenedor de la stage.');
@@ -177,6 +183,7 @@ function normalizeLayoutEntry(entry) {
   const duplicateOf = typeof entry?.duplicateOf === 'string' && entry.duplicateOf.trim()
     ? entry.duplicateOf.trim().toLowerCase()
     : undefined;
+  const hidden = Boolean(entry?.hidden);
   return {
     x,
     y,
@@ -185,6 +192,7 @@ function normalizeLayoutEntry(entry) {
     zIndex,
     parallaxFactor,
     duplicateOf,
+    hidden,
   };
 }
 
@@ -209,6 +217,7 @@ function ensureLayoutEntry(asset) {
       scalePercent: 100,
       zIndex: 0,
       parallaxFactor: undefined,
+      hidden: false,
     };
     return;
   }
@@ -228,6 +237,8 @@ function ensureLayoutEntry(asset) {
   if (!Number.isFinite(existing.parallaxFactor)) {
     existing.parallaxFactor = undefined;
   }
+
+  existing.hidden = Boolean(existing.hidden);
 }
 
 function getLayoutForKey(key) {
@@ -239,6 +250,7 @@ function getLayoutForKey(key) {
       scalePercent: 100,
       zIndex: 0,
       parallaxFactor: undefined,
+      hidden: false,
     };
   }
 
@@ -251,6 +263,7 @@ function getLayoutForKey(key) {
   if (!Number.isFinite(layout.parallaxFactor)) {
     layout.parallaxFactor = undefined;
   }
+  layout.hidden = Boolean(layout.hidden);
   return layout;
 }
 
@@ -478,6 +491,16 @@ function applyLayout() {
       img.style.height = '';
     }
 
+    if (layout.hidden) {
+      element.style.opacity = '0';
+      element.style.visibility = 'hidden';
+      element.style.pointerEvents = 'none';
+    } else {
+      element.style.opacity = '';
+      element.style.visibility = '';
+      element.style.pointerEvents = '';
+    }
+
     element.style.zIndex = `${getItemZIndex(layout, asset)}`;
   });
 
@@ -544,8 +567,8 @@ function ensureAudioElement() {
     return audioElement;
   }
 
-  audioElement = new Audio('audio/tinyweirdsmile.mp3');
-  audioElement.loop = true;
+  currentAudioTrackIndex = 0;
+  audioElement = new Audio(AUDIO_TRACKS[currentAudioTrackIndex]);
   audioElement.preload = 'auto';
   audioElement.volume = 0.6;
   audioElement.addEventListener('playing', () => {
@@ -559,6 +582,7 @@ function ensureAudioElement() {
     isAudioPlaying = false;
     updateAudioToggle();
   });
+  audioElement.addEventListener('ended', handleAudioEnded);
   updateAudioToggle();
   return audioElement;
 }
@@ -576,6 +600,19 @@ function toggleAudio() {
   } else {
     audio.pause();
   }
+}
+
+function handleAudioEnded() {
+  if (!audioElement) {
+    return;
+  }
+
+  currentAudioTrackIndex = (currentAudioTrackIndex + 1) % AUDIO_TRACKS.length;
+  audioElement.src = AUDIO_TRACKS[currentAudioTrackIndex];
+  audioElement.currentTime = 0;
+  audioElement.play().catch((error) => {
+    console.warn('No se pudo reproducir la siguiente pista', error);
+  });
 }
 
 function initAudioControls() {
@@ -1262,6 +1299,9 @@ function formatSceneBlock(scene, layout) {
     ];
     if (Number.isFinite(data?.parallaxFactor)) {
       parts.push(`"parallaxFactor": ${formatNumber(data.parallaxFactor)}`);
+    }
+    if (data?.hidden) {
+      parts.push('"hidden": true');
     }
     if (data?.duplicateOf) {
       parts.push(`"duplicateOf": "${data.duplicateOf}"`);

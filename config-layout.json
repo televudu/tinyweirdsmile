@@ -37,21 +37,21 @@
     // Capa: mid
     "guera": { "layer": "mid", "x": 319.45, "y": 7729.47, "scalePercent": 116.21, "zIndex": 0 },
     "ojos-front": { "layer": "mid", "x": 230.55, "y": 9744.45, "scalePercent": 73.08, "zIndex": 0 },
-    "patrulla": { "layer": "mid", "x": 206.65, "y": 16602.18, "scalePercent": 171.31, "zIndex": 0 },
+    "patrulla": { "layer": "mid", "x": 206.12, "y": 16741.98, "scalePercent": 171.31, "zIndex": 0 },
 
     // Capa: front
     "aura": { "layer": "front", "x": 327.92, "y": 12796.31, "scalePercent": 171.11, "zIndex": 1 },
     "cochera": { "layer": "front", "x": 267.46, "y": 14139.41, "scalePercent": 114.14, "zIndex": 0 },
-    "cochera2": { "layer": "front", "x": 243.94, "y": 15409.3, "scalePercent": 144.73, "zIndex": 0 },
+    "cochera2": { "layer": "front", "x": 466.54, "y": 15562.17, "scalePercent": 100.03, "zIndex": 0 },
     "estacionamiento": { "layer": "front", "x": 55.5, "y": 16765.89, "scalePercent": 142.9, "zIndex": 0 },
-    "hoyonegro": { "layer": "front", "x": 522.33, "y": 13294.12, "scalePercent": 159.7, "zIndex": 0 },
+    "hoyonegro": { "layer": "front", "x": 684.26, "y": 13402.62, "scalePercent": 104.62, "zIndex": 0 },
     "miles1": { "layer": "front", "x": 1342.98, "y": 9458.86, "scalePercent": 93.26, "zIndex": 0 },
     "miles2": { "layer": "front", "x": 1344.89, "y": 9688.07, "scalePercent": 91.63, "zIndex": 0 },
-    "mira": { "layer": "front", "x": 1251.3, "y": 18484.88, "scalePercent": 140.76, "zIndex": 0 },
+    "mira": { "layer": "front", "x": 1251.33, "y": 18578.92, "scalePercent": 140.76, "zIndex": 0 },
     "ninja": { "layer": "front", "x": 260.74, "y": 10162.54, "scalePercent": 131.22, "zIndex": 0 },
     "ninja2": { "layer": "front", "x": 1044.79, "y": 10886.52, "scalePercent": 127.12, "zIndex": 2 },
     "ninja3": { "layer": "front", "x": 597.96, "y": 12326.43, "scalePercent": 100, "zIndex": 0 },
-    "triniti": { "layer": "front", "x": 72.65, "y": 18237.56, "scalePercent": 64.64, "zIndex": 0 }
+    "triniti": { "layer": "front", "x": 88.54, "y": 18643.94, "scalePercent": 64.64, "zIndex": 0 }
   },
 
   // Escena: universo
@@ -99,8 +99,7 @@
     "huxley": { "layer": "front", "x": 1331.09, "y": 36062.29, "scalePercent": 100, "zIndex": 1 },
     "huxleydibujo": { "layer": "front", "x": 1458.49, "y": 36153.75, "scalePercent": 100, "zIndex": 0 },
     "kurt": { "layer": "front", "x": 469.25, "y": 33885.65, "scalePercent": 100, "zIndex": 0 },
-    "mies": { "layer": "front", "x": 250.7, "y": 34954.79, "scalePercent": 100, "zIndex": 0 },
-    "pez": { "layer": "front", "x": 886.5, "y": 47394.34, "scalePercent": 100, "zIndex": 0 }
+    "mies": { "layer": "front", "x": 250.7, "y": 34954.79, "scalePercent": 100, "zIndex": 0 }
   },
 
   // Escena: fin
