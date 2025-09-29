@@ -270,7 +270,7 @@ body[data-audio-state='playing'] .audio-toggle {
 .title-screen__heading {
   margin: 0;
   font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  font-size: clamp(28px, 6vw, 64px);
+  font-size: clamp(20px, 5vw, 56px);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-shadow:
