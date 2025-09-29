@@ -101,19 +101,28 @@
     "huxleydibujo": { "layer": "front", "x": 1446.19, "y": 35105.64, "scalePercent": 100, "zIndex": 0 },
     "kurt": { "layer": "front", "x": 456.95, "y": 32837.54, "scalePercent": 100, "zIndex": 0 },
     "mies": { "layer": "front", "x": 238.4, "y": 33906.68, "scalePercent": 100, "zIndex": 0 },
-    "pez": { "layer": "front", "x": 843.35, "y": 47399.74, "scalePercent": 100, "zIndex": 0 }
+    "pez": { "layer": "front", "x": 874.2, "y": 46346.23, "scalePercent": 100, "zIndex": 0 }
   },
 
   // Escena: fin
   "fin": {
 
     // Capa: front
-    "1": { "layer": "front", "x": 287.54, "y": 40739.4, "scalePercent": 100, "zIndex": 0 },
-    "2": { "layer": "front", "x": 290.51, "y": 42608.32, "scalePercent": 100, "zIndex": 0 },
-    "3": { "layer": "front", "x": 290.6, "y": 41819.92, "scalePercent": 100, "zIndex": 0 },
+    "1": { "layer": "front", "x": 282, "y": 40558.17, "scalePercent": 100, "zIndex": 0 },
+    "2": { "layer": "front", "x": 275.37, "y": 42427.7, "scalePercent": 100, "zIndex": 0 },
+    "3": { "layer": "front", "x": 278.88, "y": 41638.54, "scalePercent": 100, "zIndex": 0 },
     "cuchillo": { "layer": "front", "x": 828.28, "y": 36612.69, "scalePercent": 44.89, "zIndex": 0 },
-    "ecuacion": { "layer": "front", "x": 768.83, "y": 39264.64, "scalePercent": 71.47, "zIndex": 0 },
-    "ojos": { "layer": "front", "x": 488.84, "y": 47937.48, "scalePercent": 18.03, "zIndex": 0 },
-    "pantalla": { "layer": "front", "x": 506.26, "y": 46496, "scalePercent": 80.37, "zIndex": 0 }
+    "ecuacion": { "layer": "front", "x": 775.65, "y": 38818.97, "scalePercent": 71.47, "zIndex": 0 },
+    "ojos": { "layer": "front", "x": 965.08, "y": 46920.05, "scalePercent": 10.15, "zIndex": 0 },
+    "ojos-b": { "layer": "front", "x": 482.03, "y": 46678.95, "scalePercent": 8.31, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-c": { "layer": "front", "x": 599.49, "y": 47171.48, "scalePercent": 18.03, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-d": { "layer": "front", "x": 131.8, "y": 46990.86, "scalePercent": 13.75, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-e": { "layer": "front", "x": 1365.44, "y": 46851.14, "scalePercent": 18.03, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-f": { "layer": "front", "x": 242.66, "y": 47515.12, "scalePercent": 12.28, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-g": { "layer": "front", "x": 1344.09, "y": 47357.87, "scalePercent": 10.6, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-h": { "layer": "front", "x": 1628.77, "y": 47522.99, "scalePercent": 13.46, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-i": { "layer": "front", "x": 938.15, "y": 47668.96, "scalePercent": 12.21, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-j": { "layer": "front", "x": 1591.92, "y": 47138.32, "scalePercent": 12.43, "zIndex": 0, "duplicateOf": "ojos" },
+    "pantalla": { "layer": "front", "x": 501, "y": 45429.31, "scalePercent": 80.37, "zIndex": 0 }
   }
 }
