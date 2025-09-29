@@ -19,6 +19,7 @@
 - `styles.css` mantiene el stage alineado a la izquierda (`justify-content: flex-start`) con fondo plano negro.
 - Pantalla de título con botón "Entrar" que activa el track y centra `intro:hoyo`; el botón de audio queda disponible después.
 - Fade rápido al final del scroll: cubre el retorno al inicio sin mostrar el salto.
+- Paralaje por capa (`bg` más lento, `mid` intermedio, `front` full); cada item puede sobrescribir con `parallaxFactor` en el layout.
 
 ## Herramientas pendientes / ideas
 - Selección múltiple con overlay estilo indicador de escena para mover varios ítems juntos.

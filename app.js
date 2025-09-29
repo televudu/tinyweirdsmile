@@ -38,6 +38,8 @@ let activeDrag = null;
 let currentSceneForPanel = null;
 let stageHeight = BASE_HEIGHT;
 let sceneIndicatorLayer = null;
+let parallaxOffset = 0;
+let parallaxUpdateScheduled = false;
 
 const STAGE_PADDING = 240;
 const STAGE_HEIGHT_MIN = BASE_HEIGHT;
@@ -52,6 +54,12 @@ const BASE_LAYER_Z = {
 const SCROLL_LOOP_THRESHOLD = 24;
 const SCROLL_LOOP_RESET_DELAY = 650;
 const LOOP_OVERLAY_DURATION = 180;
+
+const PARALLAX_FACTORS = {
+  bg: 0.80,
+  mid: 0.90,
+  front: 1,
+};
 
 let audioElement = null;
 let isAudioPlaying = false;
@@ -164,6 +172,8 @@ function normalizeLayoutEntry(entry) {
     : undefined;
   const rawZ = Number(entry?.zIndex);
   const zIndex = Number.isFinite(rawZ) ? rawZ : 0;
+  const rawParallax = Number(entry?.parallaxFactor);
+  const parallaxFactor = Number.isFinite(rawParallax) ? rawParallax : undefined;
   const duplicateOf = typeof entry?.duplicateOf === 'string' && entry.duplicateOf.trim()
     ? entry.duplicateOf.trim().toLowerCase()
     : undefined;
@@ -173,6 +183,7 @@ function normalizeLayoutEntry(entry) {
     scalePercent,
     layer,
     zIndex,
+    parallaxFactor,
     duplicateOf,
   };
 }
@@ -197,6 +208,7 @@ function ensureLayoutEntry(asset) {
       y: 0,
       scalePercent: 100,
       zIndex: 0,
+      parallaxFactor: undefined,
     };
     return;
   }
@@ -212,6 +224,10 @@ function ensureLayoutEntry(asset) {
   if (!Number.isFinite(existing.zIndex)) {
     existing.zIndex = 0;
   }
+
+  if (!Number.isFinite(existing.parallaxFactor)) {
+    existing.parallaxFactor = undefined;
+  }
 }
 
 function getLayoutForKey(key) {
@@ -222,6 +238,7 @@ function getLayoutForKey(key) {
       y: 0,
       scalePercent: 100,
       zIndex: 0,
+      parallaxFactor: undefined,
     };
   }
 
@@ -230,6 +247,9 @@ function getLayoutForKey(key) {
   }
   if (!Number.isFinite(layout.zIndex)) {
     layout.zIndex = 0;
+  }
+  if (!Number.isFinite(layout.parallaxFactor)) {
+    layout.parallaxFactor = undefined;
   }
   return layout;
 }
@@ -400,11 +420,28 @@ function getStageAvailableWidth() {
   return BASE_WIDTH;
 }
 
+function scheduleParallaxUpdate() {
+  if (parallaxUpdateScheduled) {
+    return;
+  }
+  parallaxUpdateScheduled = true;
+  requestAnimationFrame(() => {
+    parallaxUpdateScheduled = false;
+    applyLayout();
+  });
+}
+
 function applyLayout() {
   if (!stageItems.length) {
     positionSceneIndicators();
     return;
   }
+
+  const scrollingContainer = stageWrapper && stageWrapper.scrollHeight > stageWrapper.clientHeight + 1
+    ? stageWrapper
+    : null;
+  const currentScroll = scrollingContainer ? scrollingContainer.scrollTop : window.scrollY || 0;
+  parallaxOffset = currentScroll;
 
   const availableWidth = getStageAvailableWidth();
   const scale = availableWidth > 0 ? availableWidth / BASE_WIDTH : 1;
@@ -417,7 +454,19 @@ function applyLayout() {
       y: baseOffset.y + START_SCROLL_OFFSET,
     };
     const layout = getLayoutForKey(asset.key);
-    const y = sceneOffset.y + layout.y;
+    let parallaxFactor = Number(layout?.parallaxFactor);
+    if (!Number.isFinite(parallaxFactor)) {
+      const datasetFactor = Number(element?.dataset?.parallaxFactor);
+      if (Number.isFinite(datasetFactor)) {
+        parallaxFactor = datasetFactor;
+      }
+    }
+    if (!Number.isFinite(parallaxFactor)) {
+      parallaxFactor = PARALLAX_FACTORS[asset.layer] ?? 1;
+    }
+
+    const parallaxY = parallaxOffset * (1 - parallaxFactor);
+    const y = sceneOffset.y + layout.y + parallaxY;
     const { scaleX, scaleY } = resolveScale(layout, asset, element);
     const img = element.querySelector('img');
 
@@ -451,6 +500,7 @@ function setupScrollLoop() {
   let isLoopingScroll = false;
 
   const handleScroll = () => {
+    scheduleParallaxUpdate();
     if (isLoopingScroll) {
       return;
     }
@@ -1210,6 +1260,9 @@ function formatSceneBlock(scene, layout) {
       `"scalePercent": ${formatNumber(scalePercent)}`,
       `"zIndex": ${formatNumber(zIndex)}`,
     ];
+    if (Number.isFinite(data?.parallaxFactor)) {
+      parts.push(`"parallaxFactor": ${formatNumber(data.parallaxFactor)}`);
+    }
     if (data?.duplicateOf) {
       parts.push(`"duplicateOf": "${data.duplicateOf}"`);
     }
