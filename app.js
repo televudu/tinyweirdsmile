@@ -450,15 +450,16 @@ function applyLayout() {
     return;
   }
 
+  const availableWidth = getStageAvailableWidth();
+  const scale = availableWidth > 0 ? availableWidth / BASE_WIDTH : 1;
+  root.style.setProperty('--stage-scale', scale.toString());
+  const inverseScale = scale > 0 ? 1 / scale : 1;
+
   const scrollingContainer = stageWrapper && stageWrapper.scrollHeight > stageWrapper.clientHeight + 1
     ? stageWrapper
     : null;
   const currentScroll = scrollingContainer ? scrollingContainer.scrollTop : window.scrollY || 0;
-  parallaxOffset = currentScroll;
-
-  const availableWidth = getStageAvailableWidth();
-  const scale = availableWidth > 0 ? availableWidth / BASE_WIDTH : 1;
-  root.style.setProperty('--stage-scale', scale.toString());
+  parallaxOffset = currentScroll * inverseScale;
 
   stageItems.forEach(({ element, asset }) => {
     const baseOffset = SCENE_OFFSETS[asset.scene] ?? { x: 0, y: 0 };
