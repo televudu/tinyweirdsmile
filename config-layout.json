@@ -126,6 +126,6 @@
     "ojos-h": { "layer": "front", "x": 1443.59, "y": 49578.43, "scalePercent": 13.46, "zIndex": 0, "duplicateOf": "ojos" },
     "ojos-i": { "layer": "front", "x": 876.09, "y": 49314.87, "scalePercent": 12.21, "zIndex": 0, "duplicateOf": "ojos" },
     "ojos-j": { "layer": "front", "x": 1612.99, "y": 48980.73, "scalePercent": 12.43, "zIndex": 0, "duplicateOf": "ojos" },
-    "pantalla": { "layer": "front", "x": 458.38, "y": 47819.78, "scalePercent": 80.37, "zIndex": 0 }
+    "pantalla": { "layer": "front", "x": 562.66, "y": 47211.14, "scalePercent": 64.89, "zIndex": 0 }
   }
 }
