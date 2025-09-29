@@ -20,6 +20,7 @@
 - Pantalla de título con botón "Entrar" que activa el track y centra `intro:hoyo`; el botón de audio queda disponible después.
 - Fade rápido al final del scroll: cubre el retorno al inicio sin mostrar el salto.
 - Paralaje por capa (`bg` más lento, `mid` intermedio, `front` full); cada item puede sobrescribir con `parallaxFactor` en el layout.
+- Overlay de glow (`screen-glow`) fijo con pulso verde tenue para ambientar.
 
 ## Herramientas pendientes / ideas
 - Selección múltiple con overlay estilo indicador de escena para mover varios ítems juntos.

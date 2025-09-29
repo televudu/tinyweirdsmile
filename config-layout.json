@@ -1,5 +1,5 @@
 {
-  // Escena activa: noche
+  // Escena activa: fin
 
   // Escena: intro
   "intro": {
@@ -17,11 +17,11 @@
 
     // Capa: front
     "chicago": { "layer": "front", "x": 359.8, "y": 2875.2, "scalePercent": 100, "zIndex": 0 },
-    "mies": { "layer": "front", "x": 454.54, "y": 3764.46, "scalePercent": 136.03, "zIndex": 0 },
-    "mies2": { "layer": "front", "x": 335.8, "y": 4499.27, "scalePercent": 190.71, "zIndex": 0 },
-    "mies3": { "layer": "front", "x": 459.33, "y": 5311.04, "scalePercent": 127.02, "zIndex": 0 },
-    "mies4": { "layer": "front", "x": 670.37, "y": 6300.49, "scalePercent": 128.46, "zIndex": 0 },
-    "nuclear": { "layer": "front", "x": 420.39, "y": 7585.22, "scalePercent": 100, "zIndex": 0 }
+    "mies": { "layer": "front", "x": 321.25, "y": 3654.39, "scalePercent": 171.29, "zIndex": 0 },
+    "mies2": { "layer": "front", "x": 471.59, "y": 4482.75, "scalePercent": 168.56, "zIndex": 0 },
+    "mies3": { "layer": "front", "x": 365.08, "y": 5286.42, "scalePercent": 138.66, "zIndex": 0 },
+    "mies4": { "layer": "front", "x": 540.28, "y": 6244.93, "scalePercent": 154.46, "zIndex": 0 },
+    "nuclear": { "layer": "front", "x": 347.87, "y": 7530.01, "scalePercent": 121.91, "zIndex": 0 }
   },
 
   // Escena: noche
@@ -29,100 +29,100 @@
 
     // Capa: bg
     "grid": { "layer": "bg", "x": -9.14, "y": 6006.09, "scalePercent": 138.87, "zIndex": 0 },
-    "ojos": { "layer": "bg", "x": 63.71, "y": 13095.96, "scalePercent": 125.58, "zIndex": 0 },
+    "ojos": { "layer": "bg", "x": 115.35, "y": 13097.98, "scalePercent": 125.58, "zIndex": 0 },
     "ojos-b": { "layer": "bg", "x": 83.27, "y": 11289.07, "scalePercent": 125.58, "zIndex": 0, "duplicateOf": "ojos" },
     "ojos2": { "layer": "bg", "x": 82.42, "y": 12255.85, "scalePercent": 125.76, "zIndex": 0 },
-    "ojos2-b": { "layer": "bg", "x": 60.52, "y": 14060.31, "scalePercent": 125.76, "zIndex": 0, "duplicateOf": "ojos2" },
+    "ojos2-b": { "layer": "bg", "x": 115.9, "y": 14062.39, "scalePercent": 125.76, "zIndex": 0, "duplicateOf": "ojos2" },
 
     // Capa: mid
     "guera": { "layer": "mid", "x": 319.45, "y": 7729.47, "scalePercent": 116.21, "zIndex": 0 },
-    "patrulla": { "layer": "mid", "x": 188.55, "y": 16342.81, "scalePercent": 171.31, "zIndex": 0 },
+    "patrulla": { "layer": "mid", "x": 206.65, "y": 16602.18, "scalePercent": 171.31, "zIndex": 0 },
 
     // Capa: front
-    "aura": { "layer": "front", "x": 419.65, "y": 12847.86, "scalePercent": 100, "zIndex": 1 },
-    "cochera": { "layer": "front", "x": 256.01, "y": 14139.39, "scalePercent": 114.14, "zIndex": 0 },
+    "aura": { "layer": "front", "x": 327.92, "y": 12796.31, "scalePercent": 171.11, "zIndex": 1 },
+    "cochera": { "layer": "front", "x": 267.46, "y": 14139.41, "scalePercent": 114.14, "zIndex": 0 },
     "cochera2": { "layer": "front", "x": 243.94, "y": 15409.3, "scalePercent": 144.73, "zIndex": 0 },
     "estacionamiento": { "layer": "front", "x": 55.5, "y": 16765.89, "scalePercent": 142.9, "zIndex": 0 },
-    "hoyonegro": { "layer": "front", "x": 569.29, "y": 13325.58, "scalePercent": 143.73, "zIndex": 0 },
+    "hoyonegro": { "layer": "front", "x": 522.33, "y": 13294.12, "scalePercent": 159.7, "zIndex": 0 },
     "miles1": { "layer": "front", "x": 1342.98, "y": 9458.86, "scalePercent": 93.26, "zIndex": 0 },
     "miles2": { "layer": "front", "x": 1344.89, "y": 9688.07, "scalePercent": 91.63, "zIndex": 0 },
-    "mira": { "layer": "front", "x": 1245.49, "y": 18300.77, "scalePercent": 140.76, "zIndex": 0 },
+    "mira": { "layer": "front", "x": 1251.3, "y": 18484.88, "scalePercent": 140.76, "zIndex": 0 },
     "ninja": { "layer": "front", "x": 260.74, "y": 10162.54, "scalePercent": 131.22, "zIndex": 0 },
     "ninja2": { "layer": "front", "x": 1044.79, "y": 10886.52, "scalePercent": 127.12, "zIndex": 2 },
     "ninja3": { "layer": "front", "x": 597.96, "y": 12326.43, "scalePercent": 100, "zIndex": 0 },
     "ojos-front": { "layer": "front", "x": 184.05, "y": 11158.6, "scalePercent": 73.08, "zIndex": 0 },
-    "triniti": { "layer": "front", "x": 57.24, "y": 18095.33, "scalePercent": 64.64, "zIndex": 0 }
+    "triniti": { "layer": "front", "x": 72.65, "y": 18237.56, "scalePercent": 64.64, "zIndex": 0 }
   },
 
   // Escena: universo
   "universo": {
 
     // Capa: bg
-    "hoyo-bg": { "layer": "bg", "x": -295.87, "y": 31358.28, "scalePercent": 185.82, "zIndex": 0 },
-    "supernova": { "layer": "bg", "x": -14.07, "y": 24356.03, "scalePercent": 143.29, "zIndex": 0 },
+    "hoyo-bg": { "layer": "bg", "x": -226.55, "y": 24111.34, "scalePercent": 185.82, "zIndex": 0 },
+    "supernova": { "layer": "bg", "x": -18.72, "y": 17397.13, "scalePercent": 143.29, "zIndex": 0 },
 
     // Capa: mid
-    "esfera": { "layer": "mid", "x": 329.7, "y": 26175.13, "scalePercent": 100, "zIndex": 0 },
-    "esfera2": { "layer": "mid", "x": 630.51, "y": 26778.79, "scalePercent": 100, "zIndex": 0 },
-    "esfera3": { "layer": "mid", "x": 1226.37, "y": 27706.48, "scalePercent": 100, "zIndex": 0 },
-    "hoyo": { "layer": "mid", "x": 201, "y": 17175.87, "scalePercent": 167.37, "zIndex": 0 },
-    "hoyo2": { "layer": "mid", "x": 96.16, "y": 21353.23, "scalePercent": 184.68, "zIndex": 0 },
-    "hoyo3": { "layer": "mid", "x": 894.32, "y": 25299.52, "scalePercent": 132.25, "zIndex": 0 },
-    "huevo": { "layer": "mid", "x": 460.72, "y": 28900.27, "scalePercent": 165.45, "zIndex": 0 },
-    "teorica": { "layer": "mid", "x": 81.21, "y": 20198.61, "scalePercent": 164.47, "zIndex": 0 },
+    "esfera": { "layer": "mid", "x": 128.88, "y": 22419.46, "scalePercent": 100, "zIndex": 0 },
+    "esfera2": { "layer": "mid", "x": 410.7, "y": 22826.34, "scalePercent": 141.1, "zIndex": 0 },
+    "esfera3": { "layer": "mid", "x": 1201.24, "y": 23220.97, "scalePercent": 100, "zIndex": 0 },
+    "hoyo": { "layer": "mid", "x": 172.59, "y": 17763.19, "scalePercent": 167.37, "zIndex": 0 },
+    "hoyo2": { "layer": "mid", "x": 115.87, "y": 20595.28, "scalePercent": 184.68, "zIndex": 0 },
+    "hoyo3": { "layer": "mid", "x": 889.5, "y": 21957.34, "scalePercent": 132.25, "zIndex": 0 },
+    "huevo": { "layer": "mid", "x": 582.49, "y": 24114.01, "scalePercent": 165.45, "zIndex": 0 },
+    "teorica": { "layer": "mid", "x": 164.31, "y": 19182.88, "scalePercent": 164.47, "zIndex": 0 },
 
     // Capa: front
-    "baile": { "layer": "front", "x": 244.89, "y": 31057.12, "scalePercent": 195.68, "zIndex": 0 },
-    "fuego": { "layer": "front", "x": 963.24, "y": 22663.43, "scalePercent": 127.17, "zIndex": 0 },
-    "hoyo3-front": { "layer": "front", "x": 530.26, "y": 30127.68, "scalePercent": 215.12, "zIndex": 0 },
-    "hoyomov": { "layer": "front", "x": 1157.53, "y": 28646.45, "scalePercent": 100, "zIndex": 0 },
-    "kirsten": { "layer": "front", "x": 856.8, "y": 32476.74, "scalePercent": 280.29, "zIndex": 0 },
-    "mirada": { "layer": "front", "x": 355.67, "y": 21632.99, "scalePercent": 115.11, "zIndex": 0 },
-    "perlas": { "layer": "front", "x": 1092.51, "y": 21938.73, "scalePercent": 125.76, "zIndex": 0 },
-    "poseido": { "layer": "front", "x": 693.84, "y": 24838.29, "scalePercent": 76.86, "zIndex": 0 },
-    "sombra": { "layer": "front", "x": 1129.4, "y": 31149.09, "scalePercent": 100, "zIndex": 0 },
-    "teorema": { "layer": "front", "x": 412.82, "y": 31708.95, "scalePercent": 100, "zIndex": 0 }
+    "baile": { "layer": "front", "x": 327.99, "y": 30041.39, "scalePercent": 195.68, "zIndex": 0 },
+    "fuego": { "layer": "front", "x": 1005.98, "y": 21633.09, "scalePercent": 127.17, "zIndex": 0 },
+    "hoyo3-front": { "layer": "front", "x": 517.65, "y": 28610.82, "scalePercent": 215.12, "zIndex": 0 },
+    "hoyomov": { "layer": "front", "x": 1243.65, "y": 27009.83, "scalePercent": 100, "zIndex": 0 },
+    "kirsten": { "layer": "front", "x": 1041.67, "y": 32380.19, "scalePercent": 81.96, "zIndex": 0 },
+    "mirada": { "layer": "front", "x": 333.61, "y": 20645.39, "scalePercent": 115.11, "zIndex": 0 },
+    "perlas": { "layer": "front", "x": 1109.06, "y": 20894.1, "scalePercent": 125.76, "zIndex": 0 },
+    "poseido": { "layer": "front", "x": 657.33, "y": 23871.36, "scalePercent": 76.86, "zIndex": 0 },
+    "sombra": { "layer": "front", "x": 1212.5, "y": 30133.36, "scalePercent": 100, "zIndex": 0 },
+    "teorema": { "layer": "front", "x": 495.92, "y": 30693.22, "scalePercent": 100, "zIndex": 0 }
   },
 
   // Escena: jardin
   "jardin": {
 
     // Capa: bg
-    "bosco": { "layer": "bg", "x": -40.43, "y": 33080.94, "scalePercent": 102.9, "zIndex": 0 },
+    "bosco": { "layer": "bg", "x": -41.15, "y": 26761.62, "scalePercent": 102.9, "zIndex": 0 },
 
     // Capa: mid
-    "cabeza": { "layer": "mid", "x": 679.79, "y": 35850.93, "scalePercent": 115, "zIndex": 0 },
+    "cabeza": { "layer": "mid", "x": 615.35, "y": 33406.76, "scalePercent": 115, "zIndex": 0 },
 
     // Capa: front
-    "dibujo": { "layer": "front", "x": 315, "y": 34883.16, "scalePercent": 187.57, "zIndex": 0 },
-    "dvndra": { "layer": "front", "x": 1425.79, "y": 33449.32, "scalePercent": 100, "zIndex": 0 },
-    "edificio": { "layer": "front", "x": 1436.36, "y": 34269.44, "scalePercent": 165.69, "zIndex": 0 },
-    "huxley": { "layer": "front", "x": 1318.79, "y": 35014.18, "scalePercent": 100, "zIndex": 1 },
-    "huxleydibujo": { "layer": "front", "x": 1446.19, "y": 35105.64, "scalePercent": 100, "zIndex": 0 },
-    "kurt": { "layer": "front", "x": 456.95, "y": 32837.54, "scalePercent": 100, "zIndex": 0 },
-    "mies": { "layer": "front", "x": 238.4, "y": 33906.68, "scalePercent": 100, "zIndex": 0 },
-    "pez": { "layer": "front", "x": 874.2, "y": 46346.23, "scalePercent": 100, "zIndex": 0 }
+    "dibujo": { "layer": "front", "x": 327.3, "y": 35931.27, "scalePercent": 187.57, "zIndex": 0 },
+    "dvndra": { "layer": "front", "x": 1438.09, "y": 34497.43, "scalePercent": 100, "zIndex": 0 },
+    "edificio": { "layer": "front", "x": 967.72, "y": 35313.04, "scalePercent": 165.69, "zIndex": 0 },
+    "huxley": { "layer": "front", "x": 1331.09, "y": 36062.29, "scalePercent": 100, "zIndex": 1 },
+    "huxleydibujo": { "layer": "front", "x": 1458.49, "y": 36153.75, "scalePercent": 100, "zIndex": 0 },
+    "kurt": { "layer": "front", "x": 469.25, "y": 33885.65, "scalePercent": 100, "zIndex": 0 },
+    "mies": { "layer": "front", "x": 250.7, "y": 34954.79, "scalePercent": 100, "zIndex": 0 },
+    "pez": { "layer": "front", "x": 886.5, "y": 47394.34, "scalePercent": 100, "zIndex": 0 }
   },
 
   // Escena: fin
   "fin": {
 
     // Capa: front
-    "1": { "layer": "front", "x": 282, "y": 40558.17, "scalePercent": 100, "zIndex": 0 },
-    "2": { "layer": "front", "x": 275.37, "y": 42427.7, "scalePercent": 100, "zIndex": 0 },
-    "3": { "layer": "front", "x": 278.88, "y": 41638.54, "scalePercent": 100, "zIndex": 0 },
-    "cuchillo": { "layer": "front", "x": 828.28, "y": 36612.69, "scalePercent": 44.89, "zIndex": 0 },
-    "ecuacion": { "layer": "front", "x": 775.65, "y": 38818.97, "scalePercent": 71.47, "zIndex": 0 },
-    "ojos": { "layer": "front", "x": 965.08, "y": 46920.05, "scalePercent": 10.15, "zIndex": 0 },
-    "ojos-b": { "layer": "front", "x": 482.03, "y": 46678.95, "scalePercent": 8.31, "zIndex": 0, "duplicateOf": "ojos" },
-    "ojos-c": { "layer": "front", "x": 599.49, "y": 47171.48, "scalePercent": 18.03, "zIndex": 0, "duplicateOf": "ojos" },
-    "ojos-d": { "layer": "front", "x": 131.8, "y": 46990.86, "scalePercent": 13.75, "zIndex": 0, "duplicateOf": "ojos" },
-    "ojos-e": { "layer": "front", "x": 1365.44, "y": 46851.14, "scalePercent": 18.03, "zIndex": 0, "duplicateOf": "ojos" },
-    "ojos-f": { "layer": "front", "x": 242.66, "y": 47515.12, "scalePercent": 12.28, "zIndex": 0, "duplicateOf": "ojos" },
-    "ojos-g": { "layer": "front", "x": 1344.09, "y": 47357.87, "scalePercent": 10.6, "zIndex": 0, "duplicateOf": "ojos" },
-    "ojos-h": { "layer": "front", "x": 1628.77, "y": 47522.99, "scalePercent": 13.46, "zIndex": 0, "duplicateOf": "ojos" },
-    "ojos-i": { "layer": "front", "x": 938.15, "y": 47668.96, "scalePercent": 12.21, "zIndex": 0, "duplicateOf": "ojos" },
-    "ojos-j": { "layer": "front", "x": 1591.92, "y": 47138.32, "scalePercent": 12.43, "zIndex": 0, "duplicateOf": "ojos" },
-    "pantalla": { "layer": "front", "x": 501, "y": 45429.31, "scalePercent": 80.37, "zIndex": 0 }
+    "1": { "layer": "front", "x": 268.74, "y": 41689.93, "scalePercent": 100, "zIndex": 0 },
+    "2": { "layer": "front", "x": 264.91, "y": 43557.19, "scalePercent": 100, "zIndex": 0 },
+    "3": { "layer": "front", "x": 268.42, "y": 42768.03, "scalePercent": 100, "zIndex": 0 },
+    "cuchillo": { "layer": "front", "x": 786.26, "y": 38886.53, "scalePercent": 44.89, "zIndex": 0 },
+    "ecuacion": { "layer": "front", "x": 690.78, "y": 40645.64, "scalePercent": 71.47, "zIndex": 0 },
+    "ojos": { "layer": "front", "x": 954.62, "y": 48049.54, "scalePercent": 10.15, "zIndex": 0 },
+    "ojos-b": { "layer": "front", "x": 471.57, "y": 47808.44, "scalePercent": 8.31, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-c": { "layer": "front", "x": 589.03, "y": 48300.97, "scalePercent": 18.03, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-d": { "layer": "front", "x": 121.34, "y": 48120.35, "scalePercent": 13.75, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-e": { "layer": "front", "x": 1354.98, "y": 47980.63, "scalePercent": 18.03, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-f": { "layer": "front", "x": 232.2, "y": 48644.61, "scalePercent": 12.28, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-g": { "layer": "front", "x": 1333.63, "y": 48487.36, "scalePercent": 10.6, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-h": { "layer": "front", "x": 1618.31, "y": 48652.48, "scalePercent": 13.46, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-i": { "layer": "front", "x": 927.69, "y": 48798.45, "scalePercent": 12.21, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos-j": { "layer": "front", "x": 1581.46, "y": 48267.81, "scalePercent": 12.43, "zIndex": 0, "duplicateOf": "ojos" },
+    "pantalla": { "layer": "front", "x": 490.54, "y": 46558.8, "scalePercent": 80.37, "zIndex": 0 }
   }
 }
