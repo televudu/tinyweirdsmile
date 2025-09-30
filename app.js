@@ -4,6 +4,8 @@ const ASSET_BASE_PATH = 'tiny-imagenes';
 const MANIFEST_PATH = `${ASSET_BASE_PATH}/manifest.json`;
 const LAYOUT_CONFIG_PATH = 'config-layout.json';
 const VALID_LAYERS = new Set(['bg', 'mid', 'front']);
+const VIDEO_EXTENSIONS = new Set(['webm', 'mp4']);
+const MEDIA_SELECTOR = 'img, video';
 
 const SCENE_OFFSETS = {
   intro: { x: 0, y: 0 },
@@ -64,6 +66,7 @@ const PARALLAX_FACTORS = {
 const AUDIO_TRACKS = [
   'audio/tinyweirdsmile.mp3',
   'audio/tinyweirdsmile-b.mp3',
+  'audio/tinyweirdsmile-c.mp3',
 ];
 
 let audioElement = null;
@@ -114,6 +117,127 @@ function parseAssetFilename(filename) {
     id: itemId.toLowerCase(),
     key: `${scene.toLowerCase()}:${itemId.toLowerCase()}`,
   };
+}
+
+function getFileExtension(filename) {
+  if (typeof filename !== 'string') {
+    return '';
+  }
+  const lastDot = filename.lastIndexOf('.');
+  if (lastDot === -1) {
+    return '';
+  }
+  return filename.slice(lastDot + 1).toLowerCase();
+}
+
+function isVideoAsset(filename) {
+  return VIDEO_EXTENSIONS.has(getFileExtension(filename));
+}
+
+function getMediaElement(container) {
+  return container?.querySelector?.(MEDIA_SELECTOR) ?? null;
+}
+
+function getMediaNaturalSize(mediaEl, fallbackWidth, fallbackHeight) {
+  if (!mediaEl) {
+    return {
+      width: getNaturalDimension(undefined, fallbackWidth),
+      height: getNaturalDimension(undefined, fallbackHeight),
+    };
+  }
+
+  if (mediaEl.tagName === 'VIDEO') {
+    return {
+      width: getNaturalDimension(mediaEl.videoWidth, fallbackWidth),
+      height: getNaturalDimension(mediaEl.videoHeight, fallbackHeight),
+    };
+  }
+
+  return {
+    width: getNaturalDimension(mediaEl.naturalWidth, fallbackWidth),
+    height: getNaturalDimension(mediaEl.naturalHeight, fallbackHeight),
+  };
+}
+
+function onMediaReady(mediaEl, callback) {
+  if (!mediaEl) {
+    callback();
+    return;
+  }
+
+  const invoke = () => {
+    callback();
+  };
+
+  if (mediaEl.tagName === 'VIDEO') {
+    if (mediaEl.readyState >= 1) {
+      invoke();
+      return;
+    }
+    mediaEl.addEventListener('loadedmetadata', invoke, { once: true });
+    return;
+  }
+
+  if (mediaEl.complete) {
+    invoke();
+    return;
+  }
+
+  mediaEl.addEventListener('load', invoke, { once: true });
+}
+
+function ensureVideoPlayback(mediaEl) {
+  if (!mediaEl || mediaEl.tagName !== 'VIDEO') {
+    return;
+  }
+
+  const playSilently = () => {
+    mediaEl.play().catch(() => {
+      /* Se ignoran errores de autoplay */
+    });
+  };
+
+  if (mediaEl.readyState >= 2) {
+    playSilently();
+  } else {
+    mediaEl.addEventListener('loadeddata', playSilently, { once: true });
+  }
+}
+
+function createMediaElement(asset) {
+  const source = `${ASSET_BASE_PATH}/${asset.filename}`;
+
+  if (isVideoAsset(asset.filename)) {
+    const video = document.createElement('video');
+    const label = `${asset.scene} ${asset.id}`.replace(/-/g, ' ');
+    video.src = source;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+    video.controls = false;
+    video.draggable = false;
+    video.dataset.mediaType = 'video';
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('aria-label', label);
+    video.setAttribute('role', 'img');
+    video.style.display = 'block';
+    video.style.width = 'auto';
+    video.style.height = 'auto';
+    return video;
+  }
+
+  const img = document.createElement('img');
+  img.src = source;
+  img.alt = `${asset.scene} ${asset.id}`.replace(/-/g, ' ');
+  img.draggable = false;
+  img.loading = 'lazy';
+  img.dataset.mediaType = 'image';
+  return img;
 }
 
 async function loadManifest() {
@@ -275,17 +399,15 @@ function getItemZIndex(layout, asset) {
 
 function resolveScale(layout, asset, element) {
   const baseScale = (Number(layout?.scalePercent) || 100) / 100;
-  const img = element?.querySelector('img');
+  const media = getMediaElement(element);
   const rect = element?.getBoundingClientRect?.();
   const stageScale = getStageScale();
-
-  const naturalWidth = getNaturalDimension(
-    img?.naturalWidth,
-    rect?.width && stageScale ? rect.width / stageScale : 0,
-  );
-  const naturalHeight = getNaturalDimension(
-    img?.naturalHeight,
-    rect?.height && stageScale ? rect.height / stageScale : 0,
+  const fallbackWidth = rect?.width && stageScale ? rect.width / stageScale : 0;
+  const fallbackHeight = rect?.height && stageScale ? rect.height / stageScale : 0;
+  const { width: naturalWidth, height: naturalHeight } = getMediaNaturalSize(
+    media,
+    fallbackWidth,
+    fallbackHeight,
   );
 
   const width = naturalWidth * baseScale;
@@ -310,20 +432,14 @@ function createStageItems(assets) {
     figure.dataset.item = asset.id;
     figure.dataset.key = asset.key;
 
-    const img = document.createElement('img');
-    img.src = `${ASSET_BASE_PATH}/${asset.filename}`;
-    img.alt = `${asset.scene} ${asset.id}`.replace(/-/g, ' ');
-    img.draggable = false;
-    img.loading = 'lazy';
-
-    figure.appendChild(img);
+    const media = createMediaElement(asset);
+    figure.appendChild(media);
     layerContainer.appendChild(figure);
 
-    if (!img.complete) {
-      img.addEventListener('load', () => {
-        requestAnimationFrame(() => applyLayout());
-      }, { once: true });
-    }
+    onMediaReady(media, () => {
+      requestAnimationFrame(() => applyLayout());
+    });
+    ensureVideoPlayback(media);
 
     ensureLayoutEntry(asset);
     stageItems.push({ element: figure, asset });
@@ -385,20 +501,14 @@ function createDuplicateStageItems() {
     figure.dataset.item = itemId;
     figure.dataset.key = key;
 
-    const img = document.createElement('img');
-    img.src = `${ASSET_BASE_PATH}/${sourceAsset.filename}`;
-    img.alt = `${sceneId} ${itemId}`.replace(/-/g, ' ');
-    img.draggable = false;
-    img.loading = 'lazy';
-
-    figure.appendChild(img);
+    const media = createMediaElement(duplicateAsset);
+    figure.appendChild(media);
     layerContainer.appendChild(figure);
 
-    if (!img.complete) {
-      img.addEventListener('load', () => {
-        requestAnimationFrame(() => applyLayout());
-      }, { once: true });
-    }
+    onMediaReady(media, () => {
+      requestAnimationFrame(() => applyLayout());
+    });
+    ensureVideoPlayback(media);
 
     rememberScene(sceneId);
     assetsByKey.set(key, duplicateAsset);
@@ -484,14 +594,14 @@ function applyLayout() {
     const parallaxY = parallaxOffset * (1 - parallaxFactor);
     const y = sceneOffset.y + layout.y + parallaxY;
     const { scaleX, scaleY } = resolveScale(layout, asset, element);
-    const img = element.querySelector('img');
+    const media = getMediaElement(element);
 
     const x = sceneOffset.x + layout.x;
     element.style.width = '';
     element.style.transform = `translate(${x}px, ${y}px) scale(${scaleX}, ${scaleY})`;
-    if (img) {
-      img.style.width = '';
-      img.style.height = '';
+    if (media) {
+      media.style.width = '';
+      media.style.height = '';
     }
 
     if (layout.hidden) {
@@ -1016,9 +1126,14 @@ function startScale(event, element, asset, handle) {
     y: rect.top + rect.height / 2,
   };
   const stageScale = getStageScale();
-  const img = element.querySelector('img');
-  const naturalWidth = getNaturalDimension(img?.naturalWidth, rect.width / stageScale);
-  const naturalHeight = getNaturalDimension(img?.naturalHeight, rect.height / stageScale);
+  const media = getMediaElement(element);
+  const fallbackWidth = rect?.width && stageScale ? rect.width / stageScale : 0;
+  const fallbackHeight = rect?.height && stageScale ? rect.height / stageScale : 0;
+  const { width: naturalWidth, height: naturalHeight } = getMediaNaturalSize(
+    media,
+    fallbackWidth,
+    fallbackHeight,
+  );
   const startScale = (layout.scalePercent ?? 100) / 100;
   const startWidth = Math.max(naturalWidth * startScale, 1);
   const startHeight = Math.max(naturalHeight * startScale, 1);
@@ -1218,11 +1333,6 @@ function updateStageHeightFromItems(stageScale) {
   stageItems.forEach(({ element, asset }) => {
     const layout = getLayoutForKey(asset.key);
     const { height } = resolveScale(layout, asset, element);
-    const img = element.querySelector('img');
-    if (!img) {
-      return;
-    }
-
     const bottom = layout.y + START_SCROLL_OFFSET + height;
     if (bottom > maxBottom) {
       maxBottom = bottom;
