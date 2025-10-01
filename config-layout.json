@@ -1,5 +1,5 @@
 {
-  // Escena activa: fin
+  // Escena activa: noche
 
   // Escena: intro
   "intro": {
@@ -30,8 +30,8 @@
     // Capa: bg
     "grid": { "layer": "bg", "x": -9.14, "y": 6006.09, "scalePercent": 138.87, "zIndex": 0 },
     "ojos": { "layer": "bg", "x": 115.35, "y": 13097.98, "scalePercent": 125.58, "zIndex": 0 },
-    "ojos-b": { "layer": "bg", "x": 83.25, "y": 11294.19, "scalePercent": 125.58, "zIndex": 0, "duplicateOf": "ojos" },
-    "ojos2": { "layer": "bg", "x": 82.42, "y": 12255.85, "scalePercent": 125.76, "zIndex": 0 },
+    "ojos-b": { "layer": "bg", "x": 113.58, "y": 11170.2, "scalePercent": 125.58, "zIndex": 0, "duplicateOf": "ojos" },
+    "ojos2": { "layer": "bg", "x": 116.98, "y": 12134.73, "scalePercent": 125.76, "zIndex": 0 },
     "ojos2-b": { "layer": "bg", "x": 115.9, "y": 14062.39, "scalePercent": 125.76, "zIndex": 0, "duplicateOf": "ojos2" },
 
     // Capa: mid
@@ -62,7 +62,7 @@
 
     // Capa: bg
     "hoyo-bg": { "layer": "bg", "x": 52.97, "y": 25756.11, "scalePercent": 137.18, "zIndex": 0 },
-    "supernova": { "layer": "bg", "x": 35.5, "y": 19044.19, "scalePercent": 143.29, "zIndex": 0 },
+    "supernova": { "layer": "bg", "x": -2.44, "y": 18489.76, "scalePercent": 143.29, "zIndex": 0 },
 
     // Capa: mid
     "esfera": { "layer": "mid", "x": 158.9, "y": 23783.42, "scalePercent": 100, "zIndex": 0 },
@@ -75,19 +75,18 @@
     "teorica": { "layer": "mid", "x": 263.21, "y": 19285.34, "scalePercent": 164.47, "zIndex": 0 },
 
     // Capa: front
-    "back": { "layer": "front", "x": 179.7, "y": 22895.37, "scalePercent": 111.81, "zIndex": 0 },
-    "baile": { "layer": "front", "x": 382.21, "y": 31688.45, "scalePercent": 195.68, "zIndex": 0 },
+    "baile": { "layer": "front", "x": 367.19, "y": 31967.09, "scalePercent": 195.68, "zIndex": 0 },
     "fuego": { "layer": "front", "x": 1281.25, "y": 22268.99, "scalePercent": 88.42, "zIndex": 0 },
     "fuego-b": { "layer": "front", "x": 1332.63, "y": 21857.52, "scalePercent": 45.82, "zIndex": -1, "duplicateOf": "fuego" },
     "fuego-c": { "layer": "front", "x": 1351.9, "y": 21520.85, "scalePercent": 28.16, "zIndex": -2, "duplicateOf": "fuego" },
-    "hoyo3-front": { "layer": "front", "x": 559.2, "y": 30752.82, "scalePercent": 215.12, "zIndex": 0 },
+    "hoyo3-front": { "layer": "front", "x": 471.44, "y": 29327.54, "scalePercent": 215.12, "zIndex": 0 },
     "hoyomov": { "layer": "front", "x": 913.86, "y": 28094.48, "scalePercent": 83.19, "zIndex": 0 },
-    "lynch": { "layer": "front", "x": 278.56, "y": 23784.01, "scalePercent": 85.87, "zIndex": 0 },
-    "mano": { "layer": "front", "x": 737.83, "y": 29328.34, "scalePercent": 81.03, "zIndex": 0 },
+    "lynch": { "layer": "front", "x": 266.85, "y": 23298.83, "scalePercent": 85.87, "zIndex": 0 },
+    "mano": { "layer": "front", "x": 422.77, "y": 30811.79, "scalePercent": 33.47, "zIndex": 0 },
     "mirada": { "layer": "front", "x": 334.3, "y": 20708.49, "scalePercent": 115.11, "zIndex": 0 },
     "perlas": { "layer": "front", "x": 1159.94, "y": 20827.15, "scalePercent": 125.76, "zIndex": 0 },
     "poseido": { "layer": "front", "x": 711.55, "y": 25518.42, "scalePercent": 76.86, "zIndex": 0 },
-    "sombra": { "layer": "front", "x": 1266.72, "y": 31780.42, "scalePercent": 100, "zIndex": 0 },
+    "sombra": { "layer": "front", "x": 1120.71, "y": 31587.9, "scalePercent": 100, "zIndex": 0 },
     "teorema": { "layer": "front", "x": 306.44, "y": 32511.29, "scalePercent": 100, "zIndex": 0 }
   },
 
@@ -98,7 +97,7 @@
     "bosco": { "layer": "bg", "x": -11.1, "y": 27664.52, "scalePercent": 101.57, "zIndex": 0 },
 
     // Capa: mid
-    "cabeza": { "layer": "mid", "x": 714.75, "y": 35065.13, "scalePercent": 115, "zIndex": 0 },
+    "cabeza": { "layer": "mid", "x": 663.32, "y": 35067.23, "scalePercent": 115, "zIndex": 0 },
 
     // Capa: front
     "dibujo": { "layer": "front", "x": 434.03, "y": 36567.81, "scalePercent": 157.69, "zIndex": 0 },
@@ -114,7 +113,7 @@
   "fin": {
 
     // Capa: mid
-    "trace": { "layer": "mid", "x": 710, "y": 36424.4, "scalePercent": 54.95, "zIndex": 0 },
+    "trace": { "layer": "mid", "x": 577.71, "y": 36542.68, "scalePercent": 54.95, "zIndex": 0 },
 
     // Capa: front
     "1": { "layer": "front", "x": 408.51, "y": 45245.87, "scalePercent": 86.06, "zIndex": 0 },
@@ -133,6 +132,6 @@
     "ojos-i": { "layer": "front", "x": 1193.08, "y": 53496.31, "scalePercent": 7, "zIndex": 0, "duplicateOf": "ojos" },
     "ojos-j": { "layer": "front", "x": 1553.27, "y": 53584.6, "scalePercent": 12.43, "zIndex": 0, "duplicateOf": "ojos" },
     "pantalla": { "layer": "front", "x": 573.44, "y": 51325.1, "scalePercent": 64.89, "zIndex": 0 },
-    "shadow": { "layer": "front", "x": 616.1, "y": 49246.66, "scalePercent": 65.73, "zIndex": 0 }
+    "shadow": { "layer": "front", "x": 742.32, "y": 49414.96, "scalePercent": 44.69, "zIndex": 0 }
   }
 }
